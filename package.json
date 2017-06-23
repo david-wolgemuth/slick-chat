@@ -1,0 +1,36 @@
+{
+  "name": "slick-app",
+  "version": "1.0.0",
+  "description": "Chat App Based On Slack",
+  "main": "index.js",
+  "scripts": {
+    "webpack": "webpack --watch",
+    "serve": "nodemon"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/david-wolgemuth/slick-chat.git"
+  },
+  "keywords": [],
+  "author": "David Wolgemuth <davidjwolgemuth@gmail.com> (https://github.com/david-wolgemuth)",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/david-wolgemuth/slick-chat/issues"
+  },
+  "homepage": "https://github.com/david-wolgemuth/slick-chat#readme",
+  "dependencies": {
+    "angular": "^1.6.4",
+    "angular-route": "^1.6.4",
+    "babel": "^6.23.0",
+    "babel-cli": "^6.24.1",
+    "babel-core": "^6.24.1",
+    "babel-loader": "^7.0.0",
+    "babel-preset-es2015": "^6.24.1",
+    "body-parser": "^1.17.2",
+    "express": "^4.15.3",
+    "mongoose": "^4.10.8",
+    "nodemon": "^1.11.0",
+    "webpack": "^2.6.1",
+    "webpack-dev-server": "^2.4.5"
+  }
+}
