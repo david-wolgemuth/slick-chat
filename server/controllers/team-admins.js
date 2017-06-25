@@ -7,6 +7,19 @@ const Team = mongoose.model('Team');
 const teamAdmins = {};
 module.exports = teamAdmins;
 
+/**
+ * Create a TeamAdmin
+ *  (Also creates a team)
+ *  Should requestConfirmation if user successfully created
+ *  
+ * body: {
+ *  firstName: String, lastName: String, email: String, password: String 
+ * }
+ * response: {
+ *   message: String,
+ *   data: { userId, teamId }
+ * }
+ */
 teamAdmins.create = (request, response) => {
   const { firstName, lastName, email, password } = request.body;
   User.create({
@@ -29,6 +42,10 @@ teamAdmins.create = (request, response) => {
   });
 };
 
+/**
+ * Sends confirmation email to email associated with Admin Id
+ * params: { adminId }
+ */
 teamAdmins.requestConfirmation = (request, response) => {
   const { adminId } = request.params;
   User.findById(adminId).populate('team').exec()
@@ -42,6 +59,11 @@ teamAdmins.requestConfirmation = (request, response) => {
   });
 };
 
+/**
+ * Update Admin to Be Confirmed
+ * params: { adminId }
+ * redirects
+ */
 teamAdmins.confirmation =  (request, response) => {
   jwt.verify(request.query.token, process.env.JWT_SECRET, (err, decoded) => {      
     if (err || decoded.user !== request.params.adminId) {

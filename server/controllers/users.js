@@ -8,6 +8,22 @@ const Team = mongoose.model('Team');
 
 module.exports = users;
 
+/**
+ * Create User (Invite to Team)
+ * Should only be done by team admin (users cannot invite themselves to team)
+ * Admin must be logged in
+ * 
+ * Sends invitation email to user, with temporary password
+ * 
+ * params: { teamId }
+ * body: {
+ *   firstName, lastName, email  (no password)
+ * }
+ * response: {
+ *   message,
+ *   data: { userId }
+ * }
+ */
 users.create = (request, response) => {
   const { firstName, lastName, email } = request.body;
   const { teamId } = request.params;
@@ -35,6 +51,17 @@ users.create = (request, response) => {
   });
 };
 
+/**
+ * Log User In to Specific Team
+ * params: { teamId }
+ * body: {
+ *   email, password
+ * }
+ * response: {
+ *   message,
+ *   data: { userId }
+ * }
+ */
 users.login = (request, response) => {
   const { teamId } = request.params;
   const { email, password } = request.body;
@@ -51,6 +78,13 @@ users.login = (request, response) => {
   });
 };
 
+/**
+ * User confirmation from link in email invitation
+ * Logs in user for team
+ * query: { token }
+ * params: { userId }
+ * redirects
+ */
 users.confirmation = (request, response) => {
   jwt.verify(request.query.token, process.env.JWT_SECRET, (err, decoded) => {      
     if (err || decoded.user !== request.params.userId) {
@@ -67,6 +101,15 @@ users.confirmation = (request, response) => {
   });
 };
 
+/**
+ * Update User
+ * Must be logged in
+ * params: { teamId, userId }
+ * response: {
+ *   message,
+ *   data: { user }
+ * }
+ */
 users.update = (request, response) => {
   const { teamId, userId } = request.params;
   if (request.session.users.indexOf(userId) === -1) {
