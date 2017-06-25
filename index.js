@@ -3,6 +3,8 @@ const app = express();
 
 app.use(express.static('./client/dist'));
 
+require('./server/models');
+
 app.get('*', (request, response) => {
   response.sendfile('./client/index.html');
 });

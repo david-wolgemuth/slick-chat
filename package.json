@@ -29,6 +29,7 @@
     "body-parser": "^1.17.2",
     "express": "^4.15.3",
     "mongoose": "^4.10.8",
+    "mongoose-bcrypt": "^1.5.0",
     "nodemon": "^1.11.0",
     "webpack": "^2.6.1",
     "webpack-dev-server": "^2.4.5"
