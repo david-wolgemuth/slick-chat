@@ -15,6 +15,9 @@ const teamSchema = new mongoose.Schema({
     //   'Must be lowercase. Can have `-` or `_`, but start and end with letter.'
     // ]
   },
+  description: {
+    type: String
+  },
   image: {
     type: ObjectId,
     ref: 'Upload'
@@ -30,5 +33,22 @@ const teamSchema = new mongoose.Schema({
 }, {
   timestamps: true
 });
+
+teamSchema.statics.findByUrl = function (url)
+{
+  return this.findOne({ url: url });
+};
+
+teamSchema.methods.hasAdmin = function (userIds)
+{
+  return this.admins.some((admin) => {
+    for (let id of userIds) {
+      if (admin.equals(id)) {
+        return true;
+      }
+    }
+    return false;
+  });
+};
 
 mongoose.model('Team', teamSchema);

@@ -13,11 +13,6 @@ const userSchema = new mongoose.Schema({
     type: String,
     // required: true
   },
-  password: {
-    type: String,
-    // required: true,
-    bcrypt: true
-  },
   team: {
     type: ObjectId,
     ref: 'Team'
@@ -33,6 +28,34 @@ const userSchema = new mongoose.Schema({
 }, {
   timestamps: true
 });
+
+userSchema.statics.authenticate = function ({ teamId, email, password})
+{
+  return this.findOne({ email: email, team: teamId })
+  .then(user => {
+    if (!user) {
+      return null;
+    }
+    return user.verifyPassword(password)
+      .then(valid => {
+        if (valid) {
+          return user;
+        }
+        return null;
+      });
+  });
+};
+
+userSchema.statics.generateRandomPassword = function ()
+{
+  let text = "";
+  const possible = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
+
+  for(let i = 0; i < 16; i++ ) {
+      text += possible.charAt(Math.floor(Math.random() * possible.length));
+  }
+  return text;
+};
 
 userSchema.plugin(mongooseBcrypt);
 mongoose.model('User', userSchema);

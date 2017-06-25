@@ -1,10 +1,10 @@
 const nodemailer = require('nodemailer');
-const { MAILER_EMAIL, MAILER_PASSWORD } = process.env;
 const teamAdminConfirmation = require('./team-admin-confirmation');
+const userInvitation = require('./user-invitation');
+
+const { MAILER_EMAIL, MAILER_PASSWORD } = process.env;
 
 const mailer = {};
-
-console.log(MAILER_EMAIL, MAILER_PASSWORD);
 
 const transporter = nodemailer.createTransport({
   service: 'gmail',
@@ -21,6 +21,14 @@ mailer.sendTeamAdminConfirmation = (user, team) => {
   return mailer.send({ 
     subject: 'SlickChat -- Confirm Sign Up',
     to: user.email, html: teamAdminConfirmation(user, team)
+  });
+};
+
+mailer.sendUserInvitation = (user, team, tempPassword) => {
+  console.log("TEMP PASSWORD", tempPassword);
+  return mailer.send({
+    subject: 'SlickChat -- You\'ve been added to a Team!',
+    to: user.email, html: userInvitation(user, team, tempPassword)
   });
 };
 

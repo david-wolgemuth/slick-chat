@@ -1,7 +1,5 @@
 const jwt = require('jsonwebtoken');
 
-console.log("SECRET:", process.env.JWT_SECRET);
-
 module.exports = (user, team) => (`
   <h3>Hello ${user.firstName} ${user.lastName}</h3>
   <p>Please click the link below to confirm your email address and create your team:</p>

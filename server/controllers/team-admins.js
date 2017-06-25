@@ -1,14 +1,13 @@
-const express = require('express');
-const teamAdmins = express.Router();
 const mongoose = require('mongoose');
-const User = mongoose.model('User');
-const Team = mongoose.model('Team');
 const mailer = require('../mailer');
 const jwt = require('jsonwebtoken');
 
+const User = mongoose.model('User');
+const Team = mongoose.model('Team');
+const teamAdmins = {};
 module.exports = teamAdmins;
 
-teamAdmins.post('/', (request, response) => {
+teamAdmins.create = (request, response) => {
   const { firstName, lastName, email, password } = request.body;
   User.create({
     firstName, lastName, email, password
@@ -28,9 +27,9 @@ teamAdmins.post('/', (request, response) => {
       });
     });
   });
-});
+};
 
-teamAdmins.get('/:adminId/request-confirmation', (request, response) => {
+teamAdmins.requestConfirmation = (request, response) => {
   const { adminId } = request.params;
   User.findById(adminId).populate('team').exec()
   .then(admin => {
@@ -41,9 +40,9 @@ teamAdmins.get('/:adminId/request-confirmation', (request, response) => {
       });
     });
   });
-});
+};
 
-teamAdmins.get('/:adminId/confirmation', (request, response) => {
+teamAdmins.confirmation =  (request, response) => {
   jwt.verify(request.query.token, process.env.JWT_SECRET, (err, decoded) => {      
     if (err || decoded.user !== request.params.adminId) {
       return response.status(403).json({ message: 'Failed to authenticate token.' });    
@@ -55,4 +54,4 @@ teamAdmins.get('/:adminId/confirmation', (request, response) => {
       .then(() => response.redirect('/'));
     });
   });
-});
+};
