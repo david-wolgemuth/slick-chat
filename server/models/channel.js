@@ -1,5 +1,5 @@
 const mongoose = require('mongoose');
-const { ObjectId, String } = mongoose.Schema.Types;
+const { ObjectId } = mongoose.Schema.Types;
 
 const channelSchema = new mongoose.Schema({
   name: {
@@ -24,7 +24,8 @@ const channelSchema = new mongoose.Schema({
     ref: 'User'
   }],
   messages: [{
-    type: mongoose
+    type: ObjectId,
+    ref: 'Message'
   }]
 }, {
   timestamps: true

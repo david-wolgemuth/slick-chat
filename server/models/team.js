@@ -1,5 +1,5 @@
 const mongoose = require('mongoose');
-const { ObjectId, String } = mongoose.Schema.Types;
+const { ObjectId } = mongoose.Schema.Types;
 
 const teamSchema = new mongoose.Schema({
   name: {

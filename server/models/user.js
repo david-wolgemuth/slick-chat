@@ -1,6 +1,6 @@
 const mongoose = require('mongoose');
 const mongooseBcrypt = require('mongoose-bcrypt');
-const { ObjectId, String } = mongoose.Schema.Types;
+const { ObjectId } = mongoose.Schema.Types;
 
 const userSchema = new mongoose.Schema({
   firstName: {
@@ -18,10 +18,18 @@ const userSchema = new mongoose.Schema({
     // required: true,
     bcrypt: true
   },
+  team: {
+    type: ObjectId,
+    ref: 'Team'
+  },
   channels: [{
     type: ObjectId,
     ref: 'Channel'
-  }]
+  }],
+  confirmed: {
+    type: Boolean,
+    default: false
+  }
 }, {
   timestamps: true
 });
