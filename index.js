@@ -3,6 +3,11 @@ const bodyParser = require('body-parser');
 const session = require('express-session');
 const MongoStore = require('connect-mongo')(session);
 const mongoose = require('mongoose');
+global.Promise = require("bluebird");
+
+Promise.onPossiblyUnhandledRejection((error) => {
+  throw error;
+});
 
 require('./server/models');
 

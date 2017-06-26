@@ -1,41 +1,29 @@
 const mongoose = require('mongoose');
 
 const Team = mongoose.model('Team');
+const User = mongoose.model('User');
 const teams = {};
 module.exports = teams;
 
 /**
  * Search for teams
- * query: { url, name }
+ * query: { url, name (team name), email (find all teams for users) }
  * response: {
  *   message: String,
  *   data: { teams }
  * }
  */
-teams.index =  (request, response) => {
-  const { url, name } = request.query;
+teams.index = (request, response, next) => {
+  const { url, name, email } = request.query;
   if (url) {
-    return Team.findByUrl(url)
-    .then(team => {
-      if (!team) {
-        return response.status(404).json({ message: `Team With URL "${url}" Not Found` });
-      }
-      response.json({
-        message: 'Data For Team',
-        data: { teams: [team] }
-      });
-    });
+    return indexSearchByUrl(response, url).catch(next);
+  } else if (name) {
+    return indexSearchByTeamName(response, name).catch(next);
+  } else if (email) {
+    return indexSearchByEmail(response, email).catch(next);
+  } else {
+    return indexSearchLoggedInUsers(response, request.session.users).catch(next);
   }
-  if (name) {
-    return Team.find({ name })
-    .then(teams => {
-      response.json({
-        message: `Teams with name "${name}"`,
-        data: { teams }
-      });
-    });
-  }
-  response.status(400).json({ message: 'Please search by `url` or by `name`' });
 };
 
 /**
@@ -46,7 +34,7 @@ teams.index =  (request, response) => {
  *   data: { team }
  * }
  */
-teams.show = (request, response) => {
+teams.show = (request, response, next) => {
   const { id } = request.params;
   Team.findById(id)
   .then(team => {
@@ -57,7 +45,7 @@ teams.show = (request, response) => {
       message: 'Data For Team',
       data: { team }
     });
-  });
+  }).catch(next);
 };
 
 /**
@@ -71,7 +59,7 @@ teams.show = (request, response) => {
  *   data: { team }
  * }
  */
-teams.update = (request, response) => {
+teams.update = (request, response, next) => {
   const { id } = request.params;
   const { name, description } = request.params;
   Team.findById(id)  
@@ -93,5 +81,39 @@ teams.update = (request, response) => {
       message: 'Successfully Updated Team',
       data: { team }
     }));
+  }).catch(next);
+};
+
+const indexSearchByEmail = (response, email) => {
+  return User.findTeamsBelongingToUserWithEmail(email)
+  .then(teams => {
+    response.json({ message: `Teams belonging to user "${email}"`, data: { teams }});
+  }); 
+};
+
+const indexSearchByTeamName = (response, name) => {
+  return Team.find({ name })
+  .then(teams => {
+    response.json({
+      message: `Teams with name "${name}"`,
+      data: { teams }
+    });
+  });
+};
+
+const indexSearchByUrl = (response, url) => {
+  return Team.findByUrl(url)
+  .then(team => {
+    response.json({
+      message: `Teams with url "${url}"`,
+      data: { teams: [team] }
+    });
+  });
+};
+
+const indexSearchLoggedInUsers = (response, userIds) => {
+  return User.findTeamsBelongingToUserIds(userIds)
+  .then(teams => {
+    response.json({ message: 'Logged In Teams', data: { teams }});
   });
 };
