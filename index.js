@@ -1,4 +1,5 @@
 const express = require('express');
+const path = require('path');
 const bodyParser = require('body-parser');
 const session = require('express-session');
 const MongoStore = require('connect-mongo')(session);
@@ -10,6 +11,7 @@ const app = express();
 
 app.use(bodyParser.json());
 app.use(express.static('./client/dist'));
+app.use(express.static(path.join( __dirname, './client/src/partials' )));
 
 app.use(session({
   secret: 'SESSION_SECRET',
