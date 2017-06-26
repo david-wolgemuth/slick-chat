@@ -27,6 +27,4 @@ router.put('/teams/:id', teams.update);
   router.get('/teams/:teamId/users/:userId/confirmation', users.confirmation);
   router.put('/teams/:teamId/users/:userId', users.update);
 
-
-
 module.exports = router;

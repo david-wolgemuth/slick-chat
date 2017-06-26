@@ -1,4 +1,7 @@
 <div ng-controller="loginRegController">
-  <h2>Login</h2>
-  <h2>Register</h2>
+  <h4>Enter email address to see/create teams:</h4>
+  <form ng-submit="userLogin()">
+    <input type="email" name="email" ng-model="login.email" placeholder="Email">
+    <input type="submit" value="Login">
+  </form>
 </div>

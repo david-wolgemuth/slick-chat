@@ -96,7 +96,7 @@ exports.registerControllers = undefined;
 
 var _homePage = __webpack_require__(8);
 
-var _loginReg = __webpack_require__(12);
+var _loginReg = __webpack_require__(9);
 
 var registerControllers = exports.registerControllers = function registerControllers(app) {
   app.controller('homePageController', _homePage.homePage);
@@ -134,13 +134,14 @@ var registerFactories = exports.registerFactories = function registerFactories(a
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
-// require()
-// require('./partials/login.html');
+// VB clean up
 
 var routes = exports.routes = function routes(app) {
   app.config(function ($routeProvider) {
     $routeProvider.when('/', {
       templateUrl: 'login.html'
+    }).when('/select-teams', {
+      templateUrl: 'select-teams.html'
     }).otherwise({
       redirectTo: '/'
     });
@@ -151,7 +152,7 @@ var routes = exports.routes = function routes(app) {
 /* 5 */
 /***/ (function(module, exports) {
 
-module.exports = "<div ng-controller=\"loginRegController\">\n  <h2>Login</h2>\n  <h2>Register</h2>\n</div>";
+module.exports = "<div ng-controller=\"loginRegController\">\n  <h4>Enter email address to see/create teams:</h4>\n  <form ng-submit=\"userLogin()\">\n    <input type=\"email\" name=\"email\" ng-model=\"login.email\" placeholder=\"Email\">\n    <input type=\"submit\" value=\"Login\">\n  </form>\n</div>";
 
 /***/ }),
 /* 6 */
@@ -34780,7 +34781,26 @@ var homePage = exports.homePage = function homePage($scope, userFactory) {
 };
 
 /***/ }),
-/* 9 */,
+/* 9 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+var login = exports.login = function login($scope, userFactory) {
+  $scope.login = {};
+  $scope.register = {};
+  $scope.users = userFactory.index();
+
+  $scope.userLogin = function () {
+    userFactory.login();
+  };
+};
+
+/***/ }),
 /* 10 */
 /***/ (function(module, exports, __webpack_require__) {
 
@@ -34839,20 +34859,6 @@ var app = angular.module('slickApp', ['ngRoute']);
 (0, _routes.routes)(app);
 (0, _factories.registerFactories)(app);
 (0, _controllers.registerControllers)(app);
-
-/***/ }),
-/* 12 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-
-Object.defineProperty(exports, "__esModule", {
-  value: true
-});
-var login = exports.login = function login($scope, userFactory) {
-  $scope.users = userFactory.index();
-};
 
 /***/ })
 /******/ ]);
