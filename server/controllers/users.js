@@ -17,7 +17,6 @@ module.exports = users;
 users.me = (request, response, next) => {
   User.findUsersWithIds(request.session.users).populate('team').exec()
   .then(users => {
-    x
     response.json({
       message: 'Logged In Users',
       data: { users }
