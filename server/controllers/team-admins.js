@@ -72,6 +72,7 @@ teamAdmins.confirmation =  (request, response, next) => {
     User.findById(decoded.user)
     .then(user => {
       user.confirmed = true;
+      request.addUserToSession(user);
       user.save()
       .then(() => response.redirect('/'));
     }).catch(next);

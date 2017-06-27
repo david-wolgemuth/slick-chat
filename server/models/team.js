@@ -39,15 +39,10 @@ teamSchema.statics.findByUrl = function (url)
   return this.findOne({ url: url });
 };
 
-teamSchema.methods.hasAdmin = function (userIds)
+teamSchema.methods.hasAdmin = function (userId)
 {
   return this.admins.some((admin) => {
-    for (let id of userIds) {
-      if (admin.equals(id)) {
-        return true;
-      }
-    }
-    return false;
+    return (admin.equals(userId));
   });
 };
 

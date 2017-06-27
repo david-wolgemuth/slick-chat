@@ -15,7 +15,7 @@ module.exports = users;
  * }
  */
 users.me = (request, response, next) => {
-  User.findUsersWithIds(request.session.users).populate('team').exec()
+  User.findUsersWithIds(request.userIds()).populate('team').exec()
   .then(users => {
     response.json({
       message: 'Logged In Users',
@@ -31,9 +31,7 @@ users.me = (request, response, next) => {
  */
 users.logout = (request, response) => {
   if (request.params.id) {
-    request.session.users = request.session.users.filter(id =>
-      id !== request.params.id
-    );
+    request.removeUserFromSession({ userId: request.params.id });
     response.json({ message: `Logged Out User "${request.params.id}` });
   } else {
     request.session.users = [];
@@ -65,7 +63,7 @@ users.create = (request, response, next) => {
     if (!team) {
       return response.status(404).json({ message: 'Team Not Found.' });
     }
-    if (!team.hasAdmin(request.session.users)) {
+    if (!team.hasAdmin(request.user({ teamId })._id)) {
       return response.status(403).json({ message: 'Unauthorized To Invite User To Team' });
     }
     const tempPassword = User.generateRandomPassword();
@@ -103,7 +101,7 @@ users.login = (request, response, next) => {
     if (!user) {
       return response.status(400).json({ message: 'Failed To Login User' });
     }
-    request.session.users.push(user._id);
+    request.addUserToSession(user);
     response.json({
       message: 'Logged In User',
       data: { userId: user._id }
@@ -126,8 +124,7 @@ users.confirmation = (request, response, next) => {
     User.findById(decoded.user)
     .then(user => {
       user.confirmed = true;
-      request.session.users.push(user._id);
-      console.log("USER CONFIRMED");
+      request.addUserToSession(user);
       user.save()
       .then(() => response.redirect('/'));
     }).catch(next);
@@ -145,11 +142,14 @@ users.confirmation = (request, response, next) => {
  */
 users.update = (request, response, next) => {
   const { teamId, userId } = request.params;
-  if (request.session.users.indexOf(userId) === -1) {
+  if (!request.user({ userId })) {
     return response.status(403).json({ message: 'Not Authorized To Update User' });
   }
   User.findById(userId)
   .then(user => {
+    if (user.team.toString() !== teamId) {
+      return response.status(403).json({ message: 'User Not On Team' });
+    }
     for (let key in request.body) {
       user[key] = request.body[key];
     }
