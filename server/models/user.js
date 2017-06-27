@@ -75,5 +75,33 @@ userSchema.statics.generateRandomPassword = function ()
   return text;
 };
 
+userSchema.statics.findUsersWithIds = function (ids)
+{
+  const objectIds = ids.map(id => mongoose.Types.ObjectId(id));
+  return this.find({ _id: { $in: objectIds } });
+};
+
+userSchema.statics.findTeamsBelongingToUserWithEmail = function (email)
+{
+  const Team = mongoose.model('Team');
+  const User = this;
+  return User.find({ email }).select('team')
+  .then(users => {
+    const teamIds = users.map(user=>user.team);
+    return Team.find({ _id: { $in: teamIds }});
+  });
+};
+
+userSchema.statics.findTeamsBelongingToUserIds = function (userIds)
+{
+
+  const Team = mongoose.model('Team');
+  const User = this;
+  return User.findUsersWithIds(userIds).select('team')
+  .then(users => {
+    return Team.find({ _id: { $in: users.map(user=>user.team) }});
+  });
+};
+
 userSchema.plugin(mongooseBcrypt);
 mongoose.model('User', userSchema);
