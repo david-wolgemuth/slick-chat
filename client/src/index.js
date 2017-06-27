@@ -1,7 +1,12 @@
 import * as angular from 'angular';
+import * as ngRoute from 'angular-route';
 import { registerFactories } from './factories';
 import { registerControllers } from './controllers';
+import { routes } from './routes';
 
-const app = angular.module('slickApp', []);
+require('./partials/login.html');
+
+const app = angular.module('slickApp', ['ngRoute']);
+routes(app);
 registerFactories(app);
 registerControllers(app);

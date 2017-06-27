@@ -46,6 +46,24 @@ userSchema.statics.authenticate = function ({ teamId, email, password})
   });
 };
 
+userSchema.statics.authenticateLogin = function ({ email, password})
+{
+  return this.findOne({ email: email })
+  .then(user => {
+    if (!user) {
+      return null;
+    }
+
+    return user.verifyPassword(password)
+      .then(valid => {
+        if (valid) {
+          return user;
+        }
+        return null;
+      });
+  });
+};
+
 userSchema.statics.generateRandomPassword = function ()
 {
   let text = "";
