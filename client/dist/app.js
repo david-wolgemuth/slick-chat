@@ -96,9 +96,9 @@ exports.registerControllers = undefined;
 
 var _homePage = __webpack_require__(8);
 
-var _user = __webpack_require__(14);
+var _user = __webpack_require__(10);
 
-var _team = __webpack_require__(10);
+var _team = __webpack_require__(9);
 
 var registerControllers = exports.registerControllers = function registerControllers(app) {
   app.controller('homePageController', _homePage.homePage);
@@ -34793,8 +34793,7 @@ var homePage = exports.homePage = function homePage($scope, userFactory) {
 };
 
 /***/ }),
-/* 9 */,
-/* 10 */
+/* 9 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -34818,6 +34817,34 @@ var team = exports.team = function team($scope, $location, $routeParams, userFac
     console.log($scope.invite);
 
     teamFactory.inviteUser($scope.invite, $routeParams.teamId);
+  };
+};
+
+/***/ }),
+/* 10 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+var user = exports.user = function user($scope, $location, userFactory, teamFactory) {
+  $scope.user = {};
+
+  $scope.findTeam = function () {
+    console.log($scope.user.email);
+  };
+
+  $scope.createTeam = function () {
+    userFactory.createTeam($scope.user, setUserTeamId);
+  };
+
+  var setUserTeamId = function setUserTeamId(teamId) {
+    $scope.user.id = userFactory.user.id;
+    $scope.user = {};
+    teamFactory.addTeamId(teamId);
   };
 };
 
@@ -34951,34 +34978,6 @@ var app = angular.module('slickApp', ['ngRoute']);
 (0, _routes.routes)(app);
 (0, _factories.registerFactories)(app);
 (0, _controllers.registerControllers)(app);
-
-/***/ }),
-/* 14 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-
-Object.defineProperty(exports, "__esModule", {
-  value: true
-});
-var user = exports.user = function user($scope, $location, userFactory, teamFactory) {
-  $scope.user = {};
-
-  $scope.findTeam = function () {
-    console.log($scope.user.email);
-  };
-
-  $scope.createTeam = function () {
-    userFactory.createTeam($scope.user, setUserTeamId);
-  };
-
-  var setUserTeamId = function setUserTeamId(teamId) {
-    $scope.user.id = userFactory.user.id;
-    $scope.user = {};
-    teamFactory.addTeamId(teamId);
-  };
-};
 
 /***/ })
 /******/ ]);
