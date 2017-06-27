@@ -65,6 +65,9 @@ users.create = (request, response, next) => {
     if (!team) {
       return response.status(404).json({ message: 'Team Not Found.' });
     }
+
+    // DW change
+
     if (!team.hasAdmin(request.session.users)) {
       return response.status(403).json({ message: 'Unauthorized To Invite User To Team' });
     }
@@ -103,6 +106,8 @@ users.login = (request, response, next) => {
     if (!user) {
       return response.status(400).json({ message: 'Failed To Login User' });
     }
+
+    // DW change
     request.session.users.push(user._id);
     response.json({
       message: 'Logged In User',
@@ -126,6 +131,8 @@ users.confirmation = (request, response, next) => {
     User.findById(decoded.user)
     .then(user => {
       user.confirmed = true;
+
+      // DW change
       request.session.users.push(user._id);
       console.log("USER CONFIRMED");
       user.save()
@@ -145,6 +152,9 @@ users.confirmation = (request, response, next) => {
  */
 users.update = (request, response, next) => {
   const { teamId, userId } = request.params;
+
+  // DW change
+
   if (request.session.users.indexOf(userId) === -1) {
     return response.status(403).json({ message: 'Not Authorized To Update User' });
   }
