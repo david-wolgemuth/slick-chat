@@ -63,7 +63,7 @@
 /******/ 	__webpack_require__.p = "";
 /******/
 /******/ 	// Load entry module and return exports
-/******/ 	return __webpack_require__(__webpack_require__.s = 11);
+/******/ 	return __webpack_require__(__webpack_require__.s = 13);
 /******/ })
 /************************************************************************/
 /******/ ([
@@ -96,11 +96,14 @@ exports.registerControllers = undefined;
 
 var _homePage = __webpack_require__(8);
 
-var _loginReg = __webpack_require__(9);
+var _user = __webpack_require__(10);
+
+var _team = __webpack_require__(9);
 
 var registerControllers = exports.registerControllers = function registerControllers(app) {
   app.controller('homePageController', _homePage.homePage);
-  app.controller('loginRegController', _loginReg.login);
+  app.controller('userController', _user.user);
+  app.controller('teamController', _team.team);
 };
 
 /***/ }),
@@ -115,12 +118,17 @@ Object.defineProperty(exports, "__esModule", {
 });
 exports.registerFactories = undefined;
 
-var _user = __webpack_require__(10);
+var _user = __webpack_require__(12);
+
+var _team = __webpack_require__(11);
 
 var registerFactories = exports.registerFactories = function registerFactories(app) {
 
-  app.factory('userFactory', function ($http) {
-    return new _user.UserFactory($http);
+  app.factory('userFactory', function ($http, $location) {
+    return new _user.UserFactory($http, $location);
+  });
+  app.factory('teamFactory', function ($http, $location) {
+    return new _team.TeamFactory($http, $location);
   });
 };
 
@@ -137,11 +145,15 @@ Object.defineProperty(exports, "__esModule", {
 // VB clean up
 
 var routes = exports.routes = function routes(app) {
-  app.config(function ($routeProvider) {
+  app.config(function ($routeProvider, $locationProvider) {
     $routeProvider.when('/', {
       templateUrl: 'login.html'
     }).when('/select-teams', {
       templateUrl: 'select-teams.html'
+    }).when('/edit-team/:teamId', {
+      templateUrl: 'edit-team.html'
+    }).when('/edit-user/:userId', {
+      templateUrl: 'edit-user.html'
     }).otherwise({
       redirectTo: '/'
     });
@@ -152,7 +164,7 @@ var routes = exports.routes = function routes(app) {
 /* 5 */
 /***/ (function(module, exports) {
 
-module.exports = "<div ng-controller=\"loginRegController\">\n  <h4>Enter email address to see/create teams:</h4>\n    <input type=\"email\" name=\"email\" ng-model=\"user.email\" placeholder=\"Email\">\n    <button ng-click=\"findTeam()\">Find Teams</button>\n    <button ng-click=\"createTeam()\">Create Team</button>\n</div>";
+module.exports = "<div ng-controller=\"userController\">\n  <h4>Enter email address to see/create teams:</h4>\n    <input type=\"email\" name=\"email\" ng-model=\"user.email\" placeholder=\"Email\">\n    <button ng-click=\"findTeam()\">Find Teams</button>\n    <button ng-click=\"createTeam()\">Create Team</button>\n</div>";
 
 /***/ }),
 /* 6 */
@@ -34790,7 +34802,35 @@ var homePage = exports.homePage = function homePage($scope, userFactory) {
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
-var login = exports.login = function login($scope, userFactory) {
+var team = exports.team = function team($scope, $location, $routeParams, userFactory, teamFactory) {
+  $scope.team = {};
+  $scope.teams = [];
+  $scope.invite = {};
+
+  $scope.teams = teamFactory.teams;
+
+  $scope.editTeam = function () {
+    console.log($scope.team);
+  };
+
+  $scope.inviteUser = function () {
+    console.log($scope.invite);
+
+    teamFactory.inviteUser($scope.invite, $routeParams.teamId);
+  };
+};
+
+/***/ }),
+/* 10 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+var user = exports.user = function user($scope, $location, userFactory, teamFactory) {
   $scope.user = {};
 
   $scope.findTeam = function () {
@@ -34798,12 +34838,64 @@ var login = exports.login = function login($scope, userFactory) {
   };
 
   $scope.createTeam = function () {
-    userFactory.createTeam($scope.user);
+    userFactory.createTeam($scope.user, setUserTeamId);
+  };
+
+  var setUserTeamId = function setUserTeamId(teamId) {
+    $scope.user.id = userFactory.user.id;
+    $scope.user = {};
+    teamFactory.addTeamId(teamId);
   };
 };
 
 /***/ }),
-/* 10 */
+/* 11 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+
+var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+var TeamFactory = exports.TeamFactory = function () {
+  function TeamFactory($http, $location) {
+    _classCallCheck(this, TeamFactory);
+
+    this.$http = $http;
+    this.$location = $location;
+    this.teams = [];
+  }
+
+  _createClass(TeamFactory, [{
+    key: "index",
+    value: function index() {}
+  }, {
+    key: "addTeamId",
+    value: function addTeamId(teamId) {
+      this.teams.push({ id: teamId });
+    }
+  }, {
+    key: "inviteUser",
+    value: function inviteUser(user, teamId) {
+      var _this = this;
+
+      this.$http.post("/api/teams/" + teamId + "/users", user).then(function (response) {
+        _this.$location.path("/edit-user/" + response.data.data.userId);
+      });
+    }
+  }]);
+
+  return TeamFactory;
+}();
+
+/***/ }),
+/* 12 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -34818,38 +34910,38 @@ var _createClass = function () { function defineProperties(target, props) { for 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
 var UserFactory = exports.UserFactory = function () {
-  function UserFactory($http) {
+  function UserFactory($http, $location) {
     _classCallCheck(this, UserFactory);
 
     this.$http = $http;
+    this.$location = $location;
     this.user = {
       id: null
     };
   }
 
   _createClass(UserFactory, [{
-    key: 'setUser',
-    value: function setUser(id) {
-      this.user.id = id;
-    }
-  }, {
     key: 'index',
     value: function index() {
       return [{ name: 'Joe' }, { name: 'Fred' }];
     }
   }, {
     key: 'createTeam',
-    value: function createTeam(user) {
+    value: function createTeam(user, callback) {
       var _this = this;
 
-      console.log(this);
       this.$http.post('/api/team-admins', user).then(function (response) {
+        var _response$data$data = response.data.data,
+            userId = _response$data$data.userId,
+            teamId = _response$data$data.teamId;
 
-        console.log(response);
-        console.log(user);
 
-        _this.user.id = response.data.userId;
-        // setUser(response.data.userId);
+        _this.$http.get('/api/team-admins/' + userId + '/request-confirmation').then(function (response2) {
+          _this.user.id = userId;
+          callback(teamId);
+        }).then(function () {
+          _this.$location.path('/edit-team/' + teamId);
+        });
       });
     }
   }]);
@@ -34858,7 +34950,7 @@ var UserFactory = exports.UserFactory = function () {
 }();
 
 /***/ }),
-/* 11 */
+/* 13 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";

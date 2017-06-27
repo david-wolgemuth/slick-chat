@@ -1,0 +1,17 @@
+<div ng-controller="teamController">
+  <p>{{team.id}}</p>
+  <form ng-submit="editTeam()">
+    <input type="text" name="name" ng-model="team.name" placeholder="Name">
+    <input type="text" name="url" ng-model="team.url" placeholder="URL">
+    <input type="text" name="description" ng-model="team.description" placeholder="Description">
+    <input type="submit" value="Edit Team">
+  </form>
+
+  <h4>Invite User</h4>
+  <form ng-submit="inviteUser()">
+    <input type="text" name="first_name" ng-model="invite.firstName" placeholder="First Name">
+    <input type="text" name="last_name" ng-model="invite.lastName" placeholder="Last Name">
+    <input type="email" name="email" ng-model="invite.email" placeholder="Email">
+    <input type="submit" value="Invite User">
+  </form>
+</div>
