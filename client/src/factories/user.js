@@ -1,15 +1,12 @@
 
 export class UserFactory {
 
-  constructor($http) {
+  constructor($http, $location) {
     this.$http = $http;
+    this.$location = $location;
     this.user = {
       id: null
     };
-  }
-
-  setUser (id) {
-    this.user.id = id;
   }
 
   index () {
@@ -19,16 +16,19 @@ export class UserFactory {
     ];
   }
 
-  createTeam (user) {
-    console.log(this);
+  createTeam (user, callback) {
+    
     this.$http.post('/api/team-admins', user).then((response) => {
-
-
-      console.log(response);
-      console.log(user);
-
-      this.user.id = response.data.userId;
-      // setUser(response.data.userId);
+      const { userId, teamId } = response.data.data;
+      
+      this.$http.get(`/api/team-admins/${userId}/request-confirmation`).then((response2) => {
+        this.user.id = userId;
+        callback(teamId);
+        
+      })
+      .then(() => {
+        this.$location.path(`/edit-team/${teamId}`);
+      });
     });
   }
 }

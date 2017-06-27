@@ -25,22 +25,19 @@ teamAdmins.create = (request, response) => {
   User.create({
     email
   })
+
   .then((user) => {
 
-
-    console.log('USER');
-    console.log(user);
-
+    // DW Change
+    request.session.users.push(user._id);
     Team.create({
       admins: [user]
     })
+
     .then((team) => {
-
-      console.log('TEAM');
-      console.log(team);
-
       user.team = team;
       user.save()
+      
       .then(() => {
         response.json({
           message: 'Successfully Created Team Admin',
@@ -57,6 +54,7 @@ teamAdmins.create = (request, response) => {
  */
 teamAdmins.requestConfirmation = (request, response) => {
   const { adminId } = request.params;
+
   User.findById(adminId).populate('team').exec()
   .then(admin => {
     mailer.sendTeamAdminConfirmation(admin, admin.team)
