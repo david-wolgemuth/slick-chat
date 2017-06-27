@@ -7,8 +7,9 @@ export class TeamFactory {
     this.teams = [];
   }
 
-  index () {
-
+  index (query) {
+    return this.$http.get('/api/teams', query)
+    .then(response => response.data);
   }
 
   addTeamId (teamId) {

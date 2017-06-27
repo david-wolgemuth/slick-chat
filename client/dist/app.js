@@ -96,14 +96,17 @@ exports.registerControllers = undefined;
 
 var _homePage = __webpack_require__(8);
 
-var _user = __webpack_require__(14);
+var _user = __webpack_require__(10);
 
-var _team = __webpack_require__(10);
+var _team = __webpack_require__(9);
+
+var _teamsLogin = __webpack_require__(14);
 
 var registerControllers = exports.registerControllers = function registerControllers(app) {
   app.controller('homePageController', _homePage.homePage);
   app.controller('userController', _user.user);
   app.controller('teamController', _team.team);
+  app.controller('teamsLoginController', _teamsLogin.teamsLogin);
 };
 
 /***/ }),
@@ -148,8 +151,8 @@ var routes = exports.routes = function routes(app) {
   app.config(function ($routeProvider, $locationProvider) {
     $routeProvider.when('/', {
       templateUrl: 'login.html'
-    }).when('/select-teams', {
-      templateUrl: 'select-teams.html'
+    }).when('/find-my-teams', {
+      templateUrl: 'find-my-teams.html'
     }).when('/edit-team/:teamId', {
       templateUrl: 'edit-team.html'
     }).when('/edit-user/:userId', {
@@ -34793,8 +34796,7 @@ var homePage = exports.homePage = function homePage($scope, userFactory) {
 };
 
 /***/ }),
-/* 9 */,
-/* 10 */
+/* 9 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -34818,6 +34820,35 @@ var team = exports.team = function team($scope, $location, $routeParams, userFac
     console.log($scope.invite);
 
     teamFactory.inviteUser($scope.invite, $routeParams.teamId);
+  };
+};
+
+/***/ }),
+/* 10 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+var user = exports.user = function user($scope, $location, userFactory, teamFactory) {
+  $scope.user = {};
+
+  $scope.findTeam = function () {
+    $location.url('find-my-teams');
+    $location.search('email', $scope.user.email);
+  };
+
+  $scope.createTeam = function () {
+    userFactory.createTeam($scope.user, setUserTeamId);
+  };
+
+  var setUserTeamId = function setUserTeamId(teamId) {
+    $scope.user.id = userFactory.user.id;
+    $scope.user = {};
+    teamFactory.addTeamId(teamId);
   };
 };
 
@@ -34846,20 +34877,24 @@ var TeamFactory = exports.TeamFactory = function () {
   }
 
   _createClass(TeamFactory, [{
-    key: "index",
-    value: function index() {}
+    key: 'index',
+    value: function index(query) {
+      return this.$http.get('/api/teams', query).then(function (response) {
+        return response.data;
+      });
+    }
   }, {
-    key: "addTeamId",
+    key: 'addTeamId',
     value: function addTeamId(teamId) {
       this.teams.push({ id: teamId });
     }
   }, {
-    key: "inviteUser",
+    key: 'inviteUser',
     value: function inviteUser(user, teamId) {
       var _this = this;
 
-      this.$http.post("/api/teams/" + teamId + "/users", user).then(function (response) {
-        _this.$location.path("/edit-user/" + response.data.data.userId);
+      this.$http.post('/api/teams/' + teamId + '/users', user).then(function (response) {
+        _this.$location.path('/edit-user/' + response.data.data.userId);
       });
     }
   }]);
@@ -34962,22 +34997,15 @@ var app = angular.module('slickApp', ['ngRoute']);
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
-var user = exports.user = function user($scope, $location, userFactory, teamFactory) {
-  $scope.user = {};
+var teamsLogin = exports.teamsLogin = function teamsLogin($scope, $location, teamFactory) {
+  var email = $location.search().email;
+  teamFactory.index({ email: email }).then(function (_ref) {
+    var teams = _ref.teams,
+        message = _ref.message;
 
-  $scope.findTeam = function () {
-    console.log($scope.user.email);
-  };
-
-  $scope.createTeam = function () {
-    userFactory.createTeam($scope.user, setUserTeamId);
-  };
-
-  var setUserTeamId = function setUserTeamId(teamId) {
-    $scope.user.id = userFactory.user.id;
-    $scope.user = {};
-    teamFactory.addTeamId(teamId);
-  };
+    $scope.teams = teams;
+    alert(message);
+  }).catch(console.error);
 };
 
 /***/ })
