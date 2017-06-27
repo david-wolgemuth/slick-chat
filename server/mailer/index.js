@@ -14,7 +14,8 @@ const transporter = nodemailer.createTransport({
 mailer.send = ({ to, subject, html }) => {
   return transporter.sendMail({
     from: MAILER_EMAIL, to, subject, html
-  });
+  }).then(() => console.log('SENT EMAIL TO', to))
+  .catch(err => console.log('UNSUCCESSFULLY SENT EMAIL', err));
 };
 
 mailer.sendTeamAdminConfirmation = (user, team) => {

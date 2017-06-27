@@ -1,9 +1,11 @@
 export const login = ($scope, userFactory) => {
-  $scope.login = {};
-  $scope.register = {};
-  $scope.users = userFactory.index();
+  $scope.user = {};
 
-  $scope.userLogin = function() {
-    userFactory.login();
+  $scope.findTeam = function() {
+    console.log($scope.user.email);
+  };
+
+  $scope.createTeam = function() {
+    userFactory.createTeam($scope.user);
   };
 };

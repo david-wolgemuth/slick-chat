@@ -119,8 +119,8 @@ var _user = __webpack_require__(10);
 
 var registerFactories = exports.registerFactories = function registerFactories(app) {
 
-  app.factory('userFactory', function () {
-    return new _user.UserFactory();
+  app.factory('userFactory', function ($http) {
+    return new _user.UserFactory($http);
   });
 };
 
@@ -152,7 +152,7 @@ var routes = exports.routes = function routes(app) {
 /* 5 */
 /***/ (function(module, exports) {
 
-module.exports = "<div ng-controller=\"loginRegController\">\n  <h4>Enter email address to see/create teams:</h4>\n  <form ng-submit=\"userLogin()\">\n    <input type=\"email\" name=\"email\" ng-model=\"login.email\" placeholder=\"Email\">\n    <input type=\"submit\" value=\"Login\">\n  </form>\n</div>";
+module.exports = "<div ng-controller=\"loginRegController\">\n  <h4>Enter email address to see/create teams:</h4>\n    <input type=\"email\" name=\"email\" ng-model=\"user.email\" placeholder=\"Email\">\n    <button ng-click=\"findTeam()\">Find Teams</button>\n    <button ng-click=\"createTeam()\">Create Team</button>\n</div>";
 
 /***/ }),
 /* 6 */
@@ -34791,12 +34791,14 @@ Object.defineProperty(exports, "__esModule", {
   value: true
 });
 var login = exports.login = function login($scope, userFactory) {
-  $scope.login = {};
-  $scope.register = {};
-  $scope.users = userFactory.index();
+  $scope.user = {};
 
-  $scope.userLogin = function () {
-    userFactory.login();
+  $scope.findTeam = function () {
+    console.log($scope.user.email);
+  };
+
+  $scope.createTeam = function () {
+    userFactory.createTeam($scope.user);
   };
 };
 
@@ -34816,14 +34818,39 @@ var _createClass = function () { function defineProperties(target, props) { for 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
 var UserFactory = exports.UserFactory = function () {
-  function UserFactory() {
+  function UserFactory($http) {
     _classCallCheck(this, UserFactory);
+
+    this.$http = $http;
+    this.user = {
+      id: null
+    };
   }
 
   _createClass(UserFactory, [{
+    key: 'setUser',
+    value: function setUser(id) {
+      this.user.id = id;
+    }
+  }, {
     key: 'index',
     value: function index() {
       return [{ name: 'Joe' }, { name: 'Fred' }];
+    }
+  }, {
+    key: 'createTeam',
+    value: function createTeam(user) {
+      var _this = this;
+
+      console.log(this);
+      this.$http.post('/api/team-admins', user).then(function (response) {
+
+        console.log(response);
+        console.log(user);
+
+        _this.user.id = response.data.userId;
+        // setUser(response.data.userId);
+      });
     }
   }]);
 
