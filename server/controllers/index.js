@@ -33,5 +33,4 @@ router.put('/teams/:teamId/users/:userId', users.update);
 
 router.use(middleware.handleServerError);
 
-
 module.exports = router;

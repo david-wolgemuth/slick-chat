@@ -13,7 +13,7 @@ module.exports = teamAdmins;
  *  Should requestConfirmation if user successfully created
  *  
  * body: {
- *  firstName: String, lastName: String, email: String, password: String 
+ *  email: String
  * }
  * response: {
  *   message: String,
@@ -21,9 +21,9 @@ module.exports = teamAdmins;
  * }
  */
 teamAdmins.create = (request, response, next) => {
-  const { firstName, lastName, email, password } = request.body;
+  const { email } = request.body;
   User.create({
-    firstName, lastName, email, password
+    email
   })
   .then((user) => {
     Team.create({
