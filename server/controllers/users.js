@@ -9,6 +9,39 @@ const Team = mongoose.model('Team');
 module.exports = users;
 
 /**
+ * Get a list of all logged in users (with embedded teams)
+ * response: {
+ *   message, data: { users: { team } }
+ * }
+ */
+users.me = (request, response, next) => {
+  User.findUsersWithIds(request.session.users).populate('team').exec()
+  .then(users => {
+    response.json({
+      message: 'Logged In Users',
+      data: { users }
+    });
+  }).catch(next);
+};
+
+/**
+ * When passed an id, will logout only that user,
+ * Otherwise logs out all users in session
+ * response: { message }
+ */
+users.logout = (request, response) => {
+  if (request.params.id) {
+    request.session.users = request.session.users.filter(id =>
+      id !== request.params.id
+    );
+    response.json({ message: `Logged Out User "${request.params.id}` });
+  } else {
+    request.session.users = [];
+    response.json({ message: 'Logged Out All Users' });
+  }
+};
+
+/**
  * Create User (Invite to Team)
  * Should only be done by team admin (users cannot invite themselves to team)
  * Admin must be logged in
@@ -24,7 +57,7 @@ module.exports = users;
  *   data: { userId }
  * }
  */
-users.create = (request, response) => {
+users.create = (request, response, next) => {
   const { firstName, lastName, email } = request.body;
   const { teamId } = request.params;
   Team.findById(teamId)
@@ -51,7 +84,7 @@ users.create = (request, response) => {
         });
       });
     });
-  });
+  }).catch(next);
 };
 
 /**
@@ -65,7 +98,7 @@ users.create = (request, response) => {
  *   data: { userId }
  * }
  */
-users.login = (request, response) => {
+users.login = (request, response, next) => {
   const { teamId } = request.params;
   const { email, password } = request.body;
   User.authenticate({ teamId, email, password })
@@ -80,7 +113,7 @@ users.login = (request, response) => {
       message: 'Logged In User',
       data: { userId: user._id }
     });
-  });
+  }).catch(next);
 };
 
 /**
@@ -90,7 +123,7 @@ users.login = (request, response) => {
  * params: { userId }
  * redirects
  */
-users.confirmation = (request, response) => {
+users.confirmation = (request, response, next) => {
   jwt.verify(request.query.token, process.env.JWT_SECRET, (err, decoded) => {      
     if (err || decoded.user !== request.params.userId) {
       return response.status(403).json({ message: 'Failed to authenticate token.' });    
@@ -104,7 +137,7 @@ users.confirmation = (request, response) => {
       console.log("USER CONFIRMED");
       user.save()
       .then(() => response.redirect('/'));
-    });
+    }).catch(next);
   });
 };
 
@@ -117,7 +150,7 @@ users.confirmation = (request, response) => {
  *   data: { user }
  * }
  */
-users.update = (request, response) => {
+users.update = (request, response, next) => {
   const { teamId, userId } = request.params;
 
   // DW change
@@ -135,8 +168,7 @@ users.update = (request, response) => {
       response.json({
         message: 'Updated User',
         data: { user }
-      });
+      }); 
     });
-  });
-
+  }).catch(next);
 };

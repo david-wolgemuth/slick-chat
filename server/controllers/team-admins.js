@@ -20,7 +20,7 @@ module.exports = teamAdmins;
  *   data: { userId, teamId }
  * }
  */
-teamAdmins.create = (request, response) => {
+teamAdmins.create = (request, response, next) => {
   const { email } = request.body;
   User.create({
     email
@@ -45,14 +45,14 @@ teamAdmins.create = (request, response) => {
         });
       });
     });
-  });
+  }).catch(next);
 };
 
 /**
  * Sends confirmation email to email associated with Admin Id
  * params: { adminId }
  */
-teamAdmins.requestConfirmation = (request, response) => {
+teamAdmins.requestConfirmation = (request, response, next) => {
   const { adminId } = request.params;
 
   User.findById(adminId).populate('team').exec()
@@ -63,7 +63,7 @@ teamAdmins.requestConfirmation = (request, response) => {
         message: 'Sent Email Confirmation'
       });
     });
-  });
+  }).catch(next);
 };
 
 /**
@@ -71,7 +71,7 @@ teamAdmins.requestConfirmation = (request, response) => {
  * params: { adminId }
  * redirects
  */
-teamAdmins.confirmation =  (request, response) => {
+teamAdmins.confirmation =  (request, response, next) => {
   jwt.verify(request.query.token, process.env.JWT_SECRET, (err, decoded) => {      
     if (err || decoded.user !== request.params.adminId) {
       return response.status(403).json({ message: 'Failed to authenticate token.' });    
@@ -81,6 +81,6 @@ teamAdmins.confirmation =  (request, response) => {
       user.confirmed = true;
       user.save()
       .then(() => response.redirect('/'));
-    });
+    }).catch(next);
   });
 };
