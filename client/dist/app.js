@@ -63,7 +63,7 @@
 /******/ 	__webpack_require__.p = "";
 /******/
 /******/ 	// Load entry module and return exports
-/******/ 	return __webpack_require__(__webpack_require__.s = 13);
+/******/ 	return __webpack_require__(__webpack_require__.s = 14);
 /******/ })
 /************************************************************************/
 /******/ ([
@@ -96,11 +96,11 @@ exports.registerControllers = undefined;
 
 var _homePage = __webpack_require__(8);
 
-var _user = __webpack_require__(10);
+var _user = __webpack_require__(11);
 
 var _team = __webpack_require__(9);
 
-var _teamsLogin = __webpack_require__(14);
+var _teamsLogin = __webpack_require__(10);
 
 var registerControllers = exports.registerControllers = function registerControllers(app) {
   app.controller('homePageController', _homePage.homePage);
@@ -121,9 +121,9 @@ Object.defineProperty(exports, "__esModule", {
 });
 exports.registerFactories = undefined;
 
-var _user = __webpack_require__(12);
+var _user = __webpack_require__(13);
 
-var _team = __webpack_require__(11);
+var _team = __webpack_require__(12);
 
 var registerFactories = exports.registerFactories = function registerFactories(app) {
 
@@ -34833,6 +34833,50 @@ var team = exports.team = function team($scope, $location, $routeParams, userFac
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
+var teamsLogin = exports.teamsLogin = function teamsLogin($scope, $location, teamFactory, userFactory) {
+
+  var email = $location.search().email;
+  $scope.email = email;
+
+  var loadTeamsFromEmail = function loadTeamsFromEmail() {
+    teamFactory.index({ email: email }).then(function (_ref) {
+      var teams = _ref.data.teams;
+
+      console.log(teams);
+      $scope.teams = teams;
+    }).catch(console.error);
+  };
+
+  loadTeamsFromEmail();
+
+  $scope.login = function (user, team) {
+    user.email = email;
+    userFactory.login(user, team).then(function (_ref2) {
+      var message = _ref2.message,
+          user = _ref2.data.user;
+
+      console.log(message, user);
+      team.loggedIn = true;
+    });
+  };
+
+  $scope.logout = function (team) {
+    userFactory.logout({ teamId: team._id }).then(function () {
+      team.loggedIn = false;
+    });
+  };
+};
+
+/***/ }),
+/* 11 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
 var user = exports.user = function user($scope, $location, userFactory, teamFactory) {
   $scope.user = {};
 
@@ -34853,7 +34897,7 @@ var user = exports.user = function user($scope, $location, userFactory, teamFact
 };
 
 /***/ }),
-/* 11 */
+/* 12 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -34879,7 +34923,10 @@ var TeamFactory = exports.TeamFactory = function () {
   _createClass(TeamFactory, [{
     key: 'index',
     value: function index(query) {
-      return this.$http.get('/api/teams', query).then(function (response) {
+      console.log(query);
+      return this.$http.get('/api/teams', { params: query }).then(function (response) {
+        console.log(response);return response;
+      }).then(function (response) {
         return response.data;
       });
     }
@@ -34903,7 +34950,7 @@ var TeamFactory = exports.TeamFactory = function () {
 }();
 
 /***/ }),
-/* 12 */
+/* 13 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -34952,13 +34999,31 @@ var UserFactory = exports.UserFactory = function () {
         });
       });
     }
+  }, {
+    key: 'login',
+    value: function login(user, team) {
+      return this.$http.post('/api/teams/' + team._id + '/users/login', user).then(function (response) {
+        // ADD USER TO FACTORY?
+        return response.data;
+      });
+    }
+  }, {
+    key: 'logout',
+    value: function logout(query) {
+      return this.$http.get('/api/logout', { params: query }).then(function (response) {
+        return (
+          // REMOVE USER FROM FACTORY?
+          response.data
+        );
+      });
+    }
   }]);
 
   return UserFactory;
 }();
 
 /***/ }),
-/* 13 */
+/* 14 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -34986,27 +35051,6 @@ var app = angular.module('slickApp', ['ngRoute']);
 (0, _routes.routes)(app);
 (0, _factories.registerFactories)(app);
 (0, _controllers.registerControllers)(app);
-
-/***/ }),
-/* 14 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-
-Object.defineProperty(exports, "__esModule", {
-  value: true
-});
-var teamsLogin = exports.teamsLogin = function teamsLogin($scope, $location, teamFactory) {
-  var email = $location.search().email;
-  teamFactory.index({ email: email }).then(function (_ref) {
-    var teams = _ref.teams,
-        message = _ref.message;
-
-    $scope.teams = teams;
-    alert(message);
-  }).catch(console.error);
-};
 
 /***/ })
 /******/ ]);

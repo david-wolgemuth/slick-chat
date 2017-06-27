@@ -8,7 +8,9 @@ export class TeamFactory {
   }
 
   index (query) {
-    return this.$http.get('/api/teams', query)
+    console.log(query);
+    return this.$http.get('/api/teams', { params: query })
+    .then(response => { console.log(response); return response; })
     .then(response => response.data);
   }
 

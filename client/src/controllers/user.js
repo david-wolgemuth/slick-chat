@@ -4,7 +4,7 @@ export const user = ($scope, $location, userFactory, teamFactory) => {
   $scope.findTeam = function() {
     $location.url('find-my-teams');
     $location.search('email', $scope.user.email);
-  };
+  }; 
 
   $scope.createTeam = function() {
     userFactory.createTeam($scope.user, setUserTeamId);

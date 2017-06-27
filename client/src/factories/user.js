@@ -31,4 +31,20 @@ export class UserFactory {
       });
     });
   }
+
+  login (user, team) {
+    return this.$http.post(`/api/teams/${team._id}/users/login`, user)
+    .then(response => {
+      // ADD USER TO FACTORY?
+      return response.data;
+    });
+  }
+
+  logout (query) {
+    return this.$http.get(`/api/logout`, { params: query })
+    .then(response => (
+      // REMOVE USER FROM FACTORY?
+      response.data
+    ));
+  }
 }
