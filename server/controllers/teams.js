@@ -20,7 +20,7 @@ teams.index = (request, response, next) => {
   } else if (name) {
     return indexSearchByTeamName(response, name).catch(next);
   } else if (email) {
-    return indexSearchByEmail(response, email).catch(next);
+    return indexSearchByEmail(request, response, email).catch(next);
   } else {
     return indexSearchLoggedInUsers(response, request.userIds()).catch(next);
   }
@@ -84,10 +84,19 @@ teams.update = (request, response, next) => {
   }).catch(next);
 };
 
-const indexSearchByEmail = (response, email) => {
+const indexSearchByEmail = (request, response, email) => {
   return User.findTeamsBelongingToUserWithEmail(email)
+  .then(teams => (
+    teams.map(team => {
+      const loggedInUser = request.user({ teamId: team._id });
+      return team.withLoggedInKey(loggedInUser);
+    })
+  ))
   .then(teams => {
-    response.json({ message: `Teams belonging to user "${email}"`, data: { teams }});
+    response.json({
+      message: `Teams belonging to user "${email}"`,
+      data: { teams }
+    });
   }); 
 };
 

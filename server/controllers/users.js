@@ -25,14 +25,18 @@ users.me = (request, response, next) => {
 };
 
 /**
- * When passed an id, will logout only that user,
+ * When passed a userId or teamId in query will logout only that user,
  * Otherwise logs out all users in session
  * response: { message }
  */
 users.logout = (request, response) => {
-  if (request.params.id) {
-    request.removeUserFromSession({ userId: request.params.id });
-    response.json({ message: `Logged Out User "${request.params.id}` });
+  let { userId, teamId } = request.query;
+  if (userId) {
+    request.removeUserFromSession({ userId });
+    response.json({ message: `Logged Out User "${userId}"` });
+  } else if (teamId) {
+    request.removeUserFromSession({ teamId });
+    response.json({ message: `Logged Out Team "${teamId}"` });
   } else {
     request.session.users = [];
     response.json({ message: 'Logged Out All Users' });
@@ -90,7 +94,7 @@ users.create = (request, response, next) => {
  * }
  * response: {
  *   message,
- *   data: { userId }
+ *   data: { user }
  * }
  */
 users.login = (request, response, next) => {
@@ -104,7 +108,7 @@ users.login = (request, response, next) => {
     request.addUserToSession(user);
     response.json({
       message: 'Logged In User',
-      data: { userId: user._id }
+      data: { user }
     });
   }).catch(next);
 };

@@ -46,4 +46,11 @@ teamSchema.methods.hasAdmin = function (userId)
   });
 };
 
+teamSchema.methods.withLoggedInKey = function (user)
+{
+  const team = this.toObject();
+  team.loggedIn = Boolean(user);
+  return team;
+};
+
 mongoose.model('Team', teamSchema);
