@@ -1,4 +1,4 @@
-export const teamsLogin = ($scope, $location, teamFactory, userFactory) => {
+export const myTeams = ($scope, $location, teamFactory, userFactory) => {
 
   const email = $location.search().email;
   $scope.email = email;
@@ -18,7 +18,7 @@ export const teamsLogin = ($scope, $location, teamFactory, userFactory) => {
     userFactory.login(user, team)
     .then(({ message, data: { user } }) => {
       console.log(message, user);
-      team.loggedIn = true;
+      team.loggedInUserId = user._id;
     });
   };
 

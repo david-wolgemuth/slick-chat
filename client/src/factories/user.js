@@ -9,27 +9,14 @@ export class UserFactory {
     };
   }
 
-  index () {
-    return [
-      { name: 'Joe' },
-      { name: 'Fred' }
-    ];
+  index ({ teamId }) {
+    return this.$http.get(`/api/teams/${teamId}/users`)
+    .then(response => response.data);
   }
 
-  createTeam (user, callback) {
-    
-    this.$http.post('/api/team-admins', user).then((response) => {
-      const { userId, teamId } = response.data.data;
-      
-      this.$http.get(`/api/team-admins/${userId}/request-confirmation`).then((response2) => {
-        this.user.id = userId;
-        callback(teamId);
-        
-      })
-      .then(() => {
-        this.$location.path(`/edit-team/${teamId}`);
-      });
-    });
+  createTeam (user) {
+    return this.$http.post('/api/team-admins', user)
+    .then(response => response.data);
   }
 
   login (user, team) {

@@ -8,7 +8,6 @@ export class TeamFactory {
   }
 
   index (query) {
-    console.log(query);
     return this.$http.get('/api/teams', { params: query })
     .then(response => { console.log(response); return response; })
     .then(response => response.data);
@@ -19,11 +18,13 @@ export class TeamFactory {
   }
 
   inviteUser(user, teamId) {
-    this.$http.post(`/api/teams/${teamId}/users`, user).then((response) => {
-       this.$location.path(`/edit-user/${response.data.data.userId}`);
-    });
-
+    return this.$http.post(`/api/teams/${teamId}/users`, user)
+    .then(response => response.data);
   }
 
+  find (teamId) {
+    return this.$http.get(`/api/teams/${teamId}?populate=true`)
+    .then(response => response.data);
+  }
   
 }

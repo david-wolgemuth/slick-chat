@@ -96,17 +96,23 @@ exports.registerControllers = undefined;
 
 var _homePage = __webpack_require__(8);
 
-var _user = __webpack_require__(11);
+var _login = __webpack_require__(16);
 
-var _team = __webpack_require__(9);
+var _editTeam = __webpack_require__(18);
 
-var _teamsLogin = __webpack_require__(10);
+var _editUser = __webpack_require__(19);
+
+var _myTeams = __webpack_require__(17);
+
+var _alerts = __webpack_require__(15);
 
 var registerControllers = exports.registerControllers = function registerControllers(app) {
   app.controller('homePageController', _homePage.homePage);
-  app.controller('userController', _user.user);
-  app.controller('teamController', _team.team);
-  app.controller('teamsLoginController', _teamsLogin.teamsLogin);
+  app.controller('loginController', _login.login);
+  app.controller('editTeamController', _editTeam.editTeam);
+  app.controller('editUserController', _editUser.editUser);
+  app.controller('myTeamsController', _myTeams.myTeams);
+  app.controller('alertsController', _alerts.alerts);
 };
 
 /***/ }),
@@ -150,13 +156,17 @@ Object.defineProperty(exports, "__esModule", {
 var routes = exports.routes = function routes(app) {
   app.config(function ($routeProvider, $locationProvider) {
     $routeProvider.when('/', {
-      templateUrl: 'login.html'
-    }).when('/find-my-teams', {
-      templateUrl: 'find-my-teams.html'
+      templateUrl: 'login.html',
+      controller: 'loginController'
+    }).when('/my-teams', {
+      templateUrl: 'my-teams.html',
+      controller: 'myTeamsController'
     }).when('/edit-team/:teamId', {
-      templateUrl: 'edit-team.html'
+      templateUrl: 'edit-team.html',
+      controller: 'editTeamController'
     }).when('/edit-user/:userId', {
-      templateUrl: 'edit-user.html'
+      templateUrl: 'edit-user.html',
+      controller: 'editUserController'
     }).otherwise({
       redirectTo: '/'
     });
@@ -167,7 +177,7 @@ var routes = exports.routes = function routes(app) {
 /* 5 */
 /***/ (function(module, exports) {
 
-module.exports = "<div ng-controller=\"userController\">\n  <h4>Enter email address to see/create teams:</h4>\n    <input type=\"email\" name=\"email\" ng-model=\"user.email\" placeholder=\"Email\">\n    <button ng-click=\"findTeam()\">Find Teams</button>\n    <button ng-click=\"createTeam()\">Create Team</button>\n</div>";
+module.exports = "<div>\n  <h4>Enter email address to see/create teams:</h4>\n  <div class=\"form-group\">\n    <label for=\"email\"></label>\n    <input type=\"email\" id=\"email\" name=\"email\" ng-model=\"user.email\" placeholder=\"Email\" class=\"form-control\">\n  </div>\n  <button ng-click=\"findTeam()\" class=\"btn btn-info\">Find Teams</button>\n  <button ng-click=\"createTeam()\" class=\"btn btn-primary\">Create Team</button>\n</div>";
 
 /***/ }),
 /* 6 */
@@ -34796,107 +34806,9 @@ var homePage = exports.homePage = function homePage($scope, userFactory) {
 };
 
 /***/ }),
-/* 9 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-
-Object.defineProperty(exports, "__esModule", {
-  value: true
-});
-var team = exports.team = function team($scope, $location, $routeParams, userFactory, teamFactory) {
-  $scope.team = {};
-  $scope.teams = [];
-  $scope.invite = {};
-
-  $scope.teams = teamFactory.teams;
-
-  $scope.editTeam = function () {
-    console.log($scope.team);
-  };
-
-  $scope.inviteUser = function () {
-    console.log($scope.invite);
-
-    teamFactory.inviteUser($scope.invite, $routeParams.teamId);
-  };
-};
-
-/***/ }),
-/* 10 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-
-Object.defineProperty(exports, "__esModule", {
-  value: true
-});
-var teamsLogin = exports.teamsLogin = function teamsLogin($scope, $location, teamFactory, userFactory) {
-
-  var email = $location.search().email;
-  $scope.email = email;
-
-  var loadTeamsFromEmail = function loadTeamsFromEmail() {
-    teamFactory.index({ email: email }).then(function (_ref) {
-      var teams = _ref.data.teams;
-
-      console.log(teams);
-      $scope.teams = teams;
-    }).catch(console.error);
-  };
-
-  loadTeamsFromEmail();
-
-  $scope.login = function (user, team) {
-    user.email = email;
-    userFactory.login(user, team).then(function (_ref2) {
-      var message = _ref2.message,
-          user = _ref2.data.user;
-
-      console.log(message, user);
-      team.loggedIn = true;
-    });
-  };
-
-  $scope.logout = function (team) {
-    userFactory.logout({ teamId: team._id }).then(function () {
-      team.loggedIn = false;
-    });
-  };
-};
-
-/***/ }),
-/* 11 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-
-Object.defineProperty(exports, "__esModule", {
-  value: true
-});
-var user = exports.user = function user($scope, $location, userFactory, teamFactory) {
-  $scope.user = {};
-
-  $scope.findTeam = function () {
-    $location.url('find-my-teams');
-    $location.search('email', $scope.user.email);
-  };
-
-  $scope.createTeam = function () {
-    userFactory.createTeam($scope.user, setUserTeamId);
-  };
-
-  var setUserTeamId = function setUserTeamId(teamId) {
-    $scope.user.id = userFactory.user.id;
-    $scope.user = {};
-    teamFactory.addTeamId(teamId);
-  };
-};
-
-/***/ }),
+/* 9 */,
+/* 10 */,
+/* 11 */,
 /* 12 */
 /***/ (function(module, exports, __webpack_require__) {
 
@@ -34923,7 +34835,6 @@ var TeamFactory = exports.TeamFactory = function () {
   _createClass(TeamFactory, [{
     key: 'index',
     value: function index(query) {
-      console.log(query);
       return this.$http.get('/api/teams', { params: query }).then(function (response) {
         console.log(response);return response;
       }).then(function (response) {
@@ -34938,10 +34849,15 @@ var TeamFactory = exports.TeamFactory = function () {
   }, {
     key: 'inviteUser',
     value: function inviteUser(user, teamId) {
-      var _this = this;
-
-      this.$http.post('/api/teams/' + teamId + '/users', user).then(function (response) {
-        _this.$location.path('/edit-user/' + response.data.data.userId);
+      return this.$http.post('/api/teams/' + teamId + '/users', user).then(function (response) {
+        return response.data;
+      });
+    }
+  }, {
+    key: 'find',
+    value: function find(teamId) {
+      return this.$http.get('/api/teams/' + teamId + '?populate=true').then(function (response) {
+        return response.data;
       });
     }
   }]);
@@ -34977,26 +34893,18 @@ var UserFactory = exports.UserFactory = function () {
 
   _createClass(UserFactory, [{
     key: 'index',
-    value: function index() {
-      return [{ name: 'Joe' }, { name: 'Fred' }];
+    value: function index(_ref) {
+      var teamId = _ref.teamId;
+
+      return this.$http.get('/api/teams/' + teamId + '/users').then(function (response) {
+        return response.data;
+      });
     }
   }, {
     key: 'createTeam',
-    value: function createTeam(user, callback) {
-      var _this = this;
-
-      this.$http.post('/api/team-admins', user).then(function (response) {
-        var _response$data$data = response.data.data,
-            userId = _response$data$data.userId,
-            teamId = _response$data$data.teamId;
-
-
-        _this.$http.get('/api/team-admins/' + userId + '/request-confirmation').then(function (response2) {
-          _this.user.id = userId;
-          callback(teamId);
-        }).then(function () {
-          _this.$location.path('/edit-team/' + teamId);
-        });
+    value: function createTeam(user) {
+      return this.$http.post('/api/team-admins', user).then(function (response) {
+        return response.data;
       });
     }
   }, {
@@ -35051,6 +34959,188 @@ var app = angular.module('slickApp', ['ngRoute']);
 (0, _routes.routes)(app);
 (0, _factories.registerFactories)(app);
 (0, _controllers.registerControllers)(app);
+
+/***/ }),
+/* 15 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+var alerts = exports.alerts = function alerts($rootScope, $scope, $timeout) {
+  var resetAlert = function resetAlert() {
+    $scope.alert = { heading: '', message: '', type: '' };
+  };
+  resetAlert();
+
+  /*
+    Trigger Alert Example:
+    $rootScope.$emit('alert', {
+      heading: 'ERROR',
+      message: 'Something Bad Happened',
+      type: 'danger',  // ('success', 'info', 'warning', 'danger')
+      timeout: 5000    // 5 seconds
+    })
+  */
+  var displayAlert = function displayAlert(event, _ref) {
+    var _ref$heading = _ref.heading,
+        heading = _ref$heading === undefined ? '' : _ref$heading,
+        message = _ref.message,
+        _ref$type = _ref.type,
+        type = _ref$type === undefined ? 'success' : _ref$type,
+        _ref$timeout = _ref.timeout,
+        timeout = _ref$timeout === undefined ? 2000 : _ref$timeout;
+
+    $scope.alert = { heading: heading, message: message, type: type };
+    $timeout(resetAlert, timeout);
+  };
+  $rootScope.$on('alert', displayAlert);
+};
+
+/***/ }),
+/* 16 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+var login = exports.login = function login($rootScope, $scope, $location, userFactory) {
+  $scope.user = {};
+  $scope.findTeam = function () {
+    $location.url('my-teams');
+    $location.search('email', $scope.user.email);
+  };
+
+  $scope.createTeam = function () {
+    userFactory.createTeam($scope.user).then(function () {
+      $rootScope.$emit('alert', {
+        heading: 'Created Team',
+        message: 'Check Your Email For Password',
+        timeout: 6000
+      });
+      $scope.findTeam();
+    });
+  };
+};
+
+/***/ }),
+/* 17 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+var myTeams = exports.myTeams = function myTeams($scope, $location, teamFactory, userFactory) {
+
+  var email = $location.search().email;
+  $scope.email = email;
+
+  var loadTeamsFromEmail = function loadTeamsFromEmail() {
+    teamFactory.index({ email: email }).then(function (_ref) {
+      var teams = _ref.data.teams;
+
+      console.log(teams);
+      $scope.teams = teams;
+    }).catch(console.error);
+  };
+
+  loadTeamsFromEmail();
+
+  $scope.login = function (user, team) {
+    user.email = email;
+    userFactory.login(user, team).then(function (_ref2) {
+      var message = _ref2.message,
+          user = _ref2.data.user;
+
+      console.log(message, user);
+      team.loggedInUserId = user._id;
+    });
+  };
+
+  $scope.logout = function (team) {
+    userFactory.logout({ teamId: team._id }).then(function () {
+      team.loggedIn = false;
+    });
+  };
+};
+
+/***/ }),
+/* 18 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+var editTeam = exports.editTeam = function editTeam($rootScope, $scope, $location, $routeParams, userFactory, teamFactory) {
+  $scope.team = {};
+  $scope.teamUsers = [];
+  $scope.invite = {};
+
+  var retrieveTeam = function retrieveTeam() {
+    teamFactory.find($routeParams.teamId).then(function (_ref) {
+      var team = _ref.data.team;
+
+      console.log(team);
+      $scope.team = team;
+    });
+  };
+  retrieveTeam();
+  var retrieveTeamUsers = function retrieveTeamUsers() {
+    userFactory.index({ teamId: $routeParams.teamId }).then(function (_ref2) {
+      var users = _ref2.data.users;
+
+      $scope.users = users;
+    });
+  };
+  retrieveTeamUsers();
+
+  $scope.editTeam = function () {
+    console.log($scope.team);
+  };
+
+  $scope.inviteUser = function () {
+    teamFactory.inviteUser($scope.invite, $routeParams.teamId).then(function (_ref3) {
+      var user = _ref3.data.user;
+
+      $scope.invite = {};
+      retrieveTeamUsers();
+      $rootScope.$emit('alert', {
+        heading: 'Success',
+        message: 'Email Sent To ' + user.email
+      });
+    });
+  };
+};
+
+/***/ }),
+/* 19 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+var editUser = exports.editUser = function editUser($scope) {
+  $scope.user = {};
+
+  $scope.editUser = function () {
+    alert('NOT IMPLEMENTED');
+  };
+};
 
 /***/ })
 /******/ ]);

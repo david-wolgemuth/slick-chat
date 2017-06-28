@@ -18,10 +18,10 @@ mailer.send = ({ to, subject, html }) => {
   .catch(err => console.log('UNSUCCESSFULLY SENT EMAIL', err));
 };
 
-mailer.sendTeamAdminConfirmation = (user, team) => {
+mailer.sendTeamAdminConfirmation = (user, team, tempPassword) => {
   return mailer.send({ 
-    subject: 'SlickChat -- Confirm Sign Up',
-    to: user.email, html: teamAdminConfirmation(user, team)
+    subject: 'SlickChat -- Welcome!',
+    to: user.email, html: teamAdminConfirmation(user, team, tempPassword)
   });
 };
 

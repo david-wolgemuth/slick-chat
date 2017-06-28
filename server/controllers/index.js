@@ -25,6 +25,7 @@ router.put('/teams/:id', teams.update);
 
 /* TEAM USERS */
 router.post('/teams/:teamId/users', users.create);
+router.get('/teams/:teamId/users', users.index);
 router.post('/teams/:teamId/users/login', users.login);
 // router.get('/teams/:teamId/users/:userId/request-confirmation', users.requestConfirmation);
 router.get('/teams/:teamId/users/:userId/confirmation', users.confirmation);
