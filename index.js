@@ -29,7 +29,7 @@ const router = require('./server/controllers');
 app.use('/api', router);
 
 app.get('/', (request, response) => {
-  response.sendfile('./client/index.html');
+  response.sendFile(path.join(__dirname, '/client/index.html'));
 });
 
 app.listen(3000, () => {

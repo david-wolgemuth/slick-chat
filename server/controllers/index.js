@@ -12,7 +12,6 @@ router.use(middleware.setSessionUsers);
 /* ME */
 router.get('/me', users.me);
 router.get('/logout', users.logout);
-router.get('/logout/:id', users.logout);
 
 /* TEAM ADMINS */
 router.post('/team-admins', teamAdmins.create);

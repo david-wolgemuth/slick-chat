@@ -6,8 +6,8 @@ export const routes = (app) => {
       .when('/', {
         templateUrl: 'partials/login.html'
       })
-      .when('/select-teams', {
-        templateUrl: 'partials/select-teams.html'
+      .when('/find-my-teams', {
+        templateUrl: 'partials/find-my-teams.html'
       })
       .when('/edit-team/:teamId', {
         templateUrl: 'partials/edit-team.html'

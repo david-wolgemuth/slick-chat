@@ -15,7 +15,7 @@ module.exports = users;
  * }
  */
 users.me = (request, response, next) => {
-  User.findUsersWithIds(request.session.users).populate('team').exec()
+  User.findUsersWithIds(request.userIds()).populate('team').exec()
   .then(users => {
     response.json({
       message: 'Logged In Users',
@@ -25,16 +25,18 @@ users.me = (request, response, next) => {
 };
 
 /**
- * When passed an id, will logout only that user,
+ * When passed a userId or teamId in query will logout only that user,
  * Otherwise logs out all users in session
  * response: { message }
  */
 users.logout = (request, response) => {
-  if (request.params.id) {
-    request.session.users = request.session.users.filter(id =>
-      id !== request.params.id
-    );
-    response.json({ message: `Logged Out User "${request.params.id}` });
+  let { userId, teamId } = request.query;
+  if (userId) {
+    request.removeUserFromSession({ userId });
+    response.json({ message: `Logged Out User "${userId}"` });
+  } else if (teamId) {
+    request.removeUserFromSession({ teamId });
+    response.json({ message: `Logged Out Team "${teamId}"` });
   } else {
     request.session.users = [];
     response.json({ message: 'Logged Out All Users' });
@@ -65,10 +67,7 @@ users.create = (request, response, next) => {
     if (!team) {
       return response.status(404).json({ message: 'Team Not Found.' });
     }
-
-    // DW change
-
-    if (!team.hasAdmin(request.session.users)) {
+    if (!team.hasAdmin(request.user({ teamId })._id)) {
       return response.status(403).json({ message: 'Unauthorized To Invite User To Team' });
     }
     const tempPassword = User.generateRandomPassword();
@@ -95,7 +94,7 @@ users.create = (request, response, next) => {
  * }
  * response: {
  *   message,
- *   data: { userId }
+ *   data: { user }
  * }
  */
 users.login = (request, response, next) => {
@@ -106,12 +105,10 @@ users.login = (request, response, next) => {
     if (!user) {
       return response.status(400).json({ message: 'Failed To Login User' });
     }
-
-    // DW change
-    request.session.users.push(user._id);
+    request.addUserToSession(user);
     response.json({
       message: 'Logged In User',
-      data: { userId: user._id }
+      data: { user }
     });
   }).catch(next);
 };
@@ -131,10 +128,7 @@ users.confirmation = (request, response, next) => {
     User.findById(decoded.user)
     .then(user => {
       user.confirmed = true;
-
-      // DW change
-      request.session.users.push(user._id);
-      console.log("USER CONFIRMED");
+      request.addUserToSession(user);
       user.save()
       .then(() => response.redirect('/'));
     }).catch(next);
@@ -152,14 +146,14 @@ users.confirmation = (request, response, next) => {
  */
 users.update = (request, response, next) => {
   const { teamId, userId } = request.params;
-
-  // DW change
-
-  if (request.session.users.indexOf(userId) === -1) {
+  if (!request.user({ userId })) {
     return response.status(403).json({ message: 'Not Authorized To Update User' });
   }
   User.findById(userId)
   .then(user => {
+    if (user.team.toString() !== teamId) {
+      return response.status(403).json({ message: 'User Not On Team' });
+    }
     for (let key in request.body) {
       user[key] = request.body[key];
     }

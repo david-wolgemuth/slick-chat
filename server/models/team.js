@@ -39,18 +39,18 @@ teamSchema.statics.findByUrl = function (url)
   return this.findOne({ url: url });
 };
 
-// DW changing this so that users in session is an object
-// [{team_id: id, user_id: {}]
-teamSchema.methods.hasAdmin = function (userIds)
+teamSchema.methods.hasAdmin = function (userId)
 {
   return this.admins.some((admin) => {
-    for (let id of userIds) {
-      if (admin.equals(id)) {
-        return true;
-      }
-    }
-    return false;
+    return (admin.equals(userId));
   });
+};
+
+teamSchema.methods.withLoggedInKey = function (user)
+{
+  const team = this.toObject();
+  team.loggedIn = Boolean(user);
+  return team;
 };
 
 mongoose.model('Team', teamSchema);
