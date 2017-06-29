@@ -16,7 +16,7 @@ const app = express();
 
 app.use(bodyParser.json());
 app.use(express.static('./client/dist'));
-app.use(express.static(path.join( __dirname, './client/src/partials' )));
+app.use(express.static(path.join( __dirname, './client/src' )));
 
 app.use(session({
   secret: 'SESSION_SECRET',

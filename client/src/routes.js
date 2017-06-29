@@ -4,16 +4,16 @@ export const routes = (app) => {
   app.config(function ($routeProvider, $locationProvider) {
     $routeProvider
       .when('/', {
-        templateUrl: 'login.html'
+        templateUrl: 'partials/login.html'
       })
       .when('/find-my-teams', {
-        templateUrl: 'find-my-teams.html'
+        templateUrl: 'partials/find-my-teams.html'
       })
       .when('/edit-team/:teamId', {
-        templateUrl: 'edit-team.html'
+        templateUrl: 'partials/edit-team.html'
       })
       .when('/edit-user/:userId', {
-        templateUrl: 'edit-user.html'
+        templateUrl: 'partials/edit-user.html'
       })
       .otherwise({
         redirectTo: '/'
