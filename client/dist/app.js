@@ -63,111 +63,47 @@
 /******/ 	__webpack_require__.p = "";
 /******/
 /******/ 	// Load entry module and return exports
-/******/ 	return __webpack_require__(__webpack_require__.s = 13);
+/******/ 	return __webpack_require__(__webpack_require__.s = 15);
 /******/ })
 /************************************************************************/
 /******/ ([
 /* 0 */
 /***/ (function(module, exports, __webpack_require__) {
 
-__webpack_require__(6);
-module.exports = 'ngRoute';
+"use strict";
 
+
+var _angular = __webpack_require__(5);
+
+var angular = _interopRequireWildcard(_angular);
+
+var _angularRoute = __webpack_require__(3);
+
+var ngRoute = _interopRequireWildcard(_angularRoute);
+
+var _factories = __webpack_require__(10);
+
+var _controllers = __webpack_require__(7);
+
+var _routes = __webpack_require__(13);
+
+function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj; } else { var newObj = {}; if (obj != null) { for (var key in obj) { if (Object.prototype.hasOwnProperty.call(obj, key)) newObj[key] = obj[key]; } } newObj.default = obj; return newObj; } }
+
+__webpack_require__(14);
+
+var app = angular.module('slickApp', ['ngRoute']);
+(0, _routes.routes)(app);
+(0, _factories.registerFactories)(app);
+(0, _controllers.registerControllers)(app);
 
 /***/ }),
 /* 1 */
-/***/ (function(module, exports, __webpack_require__) {
+/***/ (function(module, exports) {
 
-__webpack_require__(7);
-module.exports = angular;
-
+// removed by extract-text-webpack-plugin
 
 /***/ }),
 /* 2 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-
-Object.defineProperty(exports, "__esModule", {
-  value: true
-});
-exports.registerControllers = undefined;
-
-var _homePage = __webpack_require__(8);
-
-var _user = __webpack_require__(14);
-
-var _team = __webpack_require__(10);
-
-var registerControllers = exports.registerControllers = function registerControllers(app) {
-  app.controller('homePageController', _homePage.homePage);
-  app.controller('userController', _user.user);
-  app.controller('teamController', _team.team);
-};
-
-/***/ }),
-/* 3 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-
-Object.defineProperty(exports, "__esModule", {
-  value: true
-});
-exports.registerFactories = undefined;
-
-var _user = __webpack_require__(12);
-
-var _team = __webpack_require__(11);
-
-var registerFactories = exports.registerFactories = function registerFactories(app) {
-
-  app.factory('userFactory', function ($http, $location) {
-    return new _user.UserFactory($http, $location);
-  });
-  app.factory('teamFactory', function ($http, $location) {
-    return new _team.TeamFactory($http, $location);
-  });
-};
-
-/***/ }),
-/* 4 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-
-Object.defineProperty(exports, "__esModule", {
-  value: true
-});
-// VB clean up
-
-var routes = exports.routes = function routes(app) {
-  app.config(function ($routeProvider, $locationProvider) {
-    $routeProvider.when('/', {
-      templateUrl: 'login.html'
-    }).when('/select-teams', {
-      templateUrl: 'select-teams.html'
-    }).when('/edit-team/:teamId', {
-      templateUrl: 'edit-team.html'
-    }).when('/edit-user/:userId', {
-      templateUrl: 'edit-user.html'
-    }).otherwise({
-      redirectTo: '/'
-    });
-  });
-};
-
-/***/ }),
-/* 5 */
-/***/ (function(module, exports) {
-
-module.exports = "<div ng-controller=\"userController\">\n  <h4>Enter email address to see/create teams:</h4>\n    <input type=\"email\" name=\"email\" ng-model=\"user.email\" placeholder=\"Email\">\n    <button ng-click=\"findTeam()\">Find Teams</button>\n    <button ng-click=\"createTeam()\">Create Team</button>\n</div>";
-
-/***/ }),
-/* 6 */
 /***/ (function(module, exports) {
 
 /**
@@ -1402,7 +1338,15 @@ function ngViewFillContentFactory($compile, $controller, $route) {
 
 
 /***/ }),
-/* 7 */
+/* 3 */
+/***/ (function(module, exports, __webpack_require__) {
+
+__webpack_require__(2);
+module.exports = 'ngRoute';
+
+
+/***/ }),
+/* 4 */
 /***/ (function(module, exports) {
 
 /**
@@ -34779,7 +34723,15 @@ $provide.value("$locale", {
 !window.angular.$$csp().noInlineStyle && window.angular.element(document.head).prepend('<style type="text/css">@charset "UTF-8";[ng\\:cloak],[ng-cloak],[data-ng-cloak],[x-ng-cloak],.ng-cloak,.x-ng-cloak,.ng-hide:not(.ng-hide-animate){display:none !important;}ng\\:form{display:block;}.ng-animate-shim{visibility:hidden;}.ng-anchor{position:absolute;}</style>');
 
 /***/ }),
-/* 8 */
+/* 5 */
+/***/ (function(module, exports, __webpack_require__) {
+
+__webpack_require__(4);
+module.exports = angular;
+
+
+/***/ }),
+/* 6 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -34793,8 +34745,31 @@ var homePage = exports.homePage = function homePage($scope, userFactory) {
 };
 
 /***/ }),
-/* 9 */,
-/* 10 */
+/* 7 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.registerControllers = undefined;
+
+var _homePage = __webpack_require__(6);
+
+var _user = __webpack_require__(9);
+
+var _team = __webpack_require__(8);
+
+var registerControllers = exports.registerControllers = function registerControllers(app) {
+  app.controller('homePageController', _homePage.homePage);
+  app.controller('userController', _user.user);
+  app.controller('teamController', _team.team);
+};
+
+/***/ }),
+/* 8 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -34819,6 +34794,60 @@ var team = exports.team = function team($scope, $location, $routeParams, userFac
 
     teamFactory.inviteUser($scope.invite, $routeParams.teamId);
   };
+};
+
+/***/ }),
+/* 9 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+var user = exports.user = function user($scope, $location, userFactory, teamFactory) {
+  $scope.user = {};
+
+  $scope.findTeam = function () {
+    console.log($scope.user.email);
+  };
+
+  $scope.createTeam = function () {
+    userFactory.createTeam($scope.user, setUserTeamId);
+  };
+
+  var setUserTeamId = function setUserTeamId(teamId) {
+    $scope.user.id = userFactory.user.id;
+    $scope.user = {};
+    teamFactory.addTeamId(teamId);
+  };
+};
+
+/***/ }),
+/* 10 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.registerFactories = undefined;
+
+var _user = __webpack_require__(12);
+
+var _team = __webpack_require__(11);
+
+var registerFactories = exports.registerFactories = function registerFactories(app) {
+
+  app.factory('userFactory', function ($http, $location) {
+    return new _user.UserFactory($http, $location);
+  });
+  app.factory('teamFactory', function ($http, $location) {
+    return new _team.TeamFactory($http, $location);
+  });
 };
 
 /***/ }),
@@ -34929,56 +34958,40 @@ var UserFactory = exports.UserFactory = function () {
 "use strict";
 
 
-var _angular = __webpack_require__(1);
-
-var angular = _interopRequireWildcard(_angular);
-
-var _angularRoute = __webpack_require__(0);
-
-var ngRoute = _interopRequireWildcard(_angularRoute);
-
-var _factories = __webpack_require__(3);
-
-var _controllers = __webpack_require__(2);
-
-var _routes = __webpack_require__(4);
-
-function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj; } else { var newObj = {}; if (obj != null) { for (var key in obj) { if (Object.prototype.hasOwnProperty.call(obj, key)) newObj[key] = obj[key]; } } newObj.default = obj; return newObj; } }
-
-__webpack_require__(5);
-
-var app = angular.module('slickApp', ['ngRoute']);
-(0, _routes.routes)(app);
-(0, _factories.registerFactories)(app);
-(0, _controllers.registerControllers)(app);
-
-/***/ }),
-/* 14 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
-var user = exports.user = function user($scope, $location, userFactory, teamFactory) {
-  $scope.user = {};
+// VB clean up
 
-  $scope.findTeam = function () {
-    console.log($scope.user.email);
-  };
-
-  $scope.createTeam = function () {
-    userFactory.createTeam($scope.user, setUserTeamId);
-  };
-
-  var setUserTeamId = function setUserTeamId(teamId) {
-    $scope.user.id = userFactory.user.id;
-    $scope.user = {};
-    teamFactory.addTeamId(teamId);
-  };
+var routes = exports.routes = function routes(app) {
+  app.config(function ($routeProvider, $locationProvider) {
+    $routeProvider.when('/', {
+      templateUrl: 'partials/login.html'
+    }).when('/select-teams', {
+      templateUrl: 'partials/select-teams.html'
+    }).when('/edit-team/:teamId', {
+      templateUrl: 'partials/edit-team.html'
+    }).when('/edit-user/:userId', {
+      templateUrl: 'partials/edit-user.html'
+    }).otherwise({
+      redirectTo: '/'
+    });
+  });
 };
+
+/***/ }),
+/* 14 */
+/***/ (function(module, exports) {
+
+module.exports = "<div ng-controller=\"userController\">\n  <h4>Enter email address to see/create teams:</h4>\n    <input type=\"email\" name=\"email\" ng-model=\"user.email\" placeholder=\"Email\">\n    <button ng-click=\"findTeam()\">Find Teams</button>\n    <button ng-click=\"createTeam()\">Create Team</button>\n</div>";
+
+/***/ }),
+/* 15 */
+/***/ (function(module, exports, __webpack_require__) {
+
+__webpack_require__(0);
+module.exports = __webpack_require__(1);
+
 
 /***/ })
 /******/ ]);
