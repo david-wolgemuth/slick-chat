@@ -1,5 +1,3 @@
-// VB clean up
-
 export const routes = (app) => {
   app.config(function ($routeProvider, $locationProvider) {
     $routeProvider
