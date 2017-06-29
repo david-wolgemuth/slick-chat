@@ -1,0 +1,21 @@
+TEAM CHANNELS
+<div>
+  <h1>Team "{{ team.name }}" Channels:</h1>
+  <ul>
+    <li ng-repeat="channel in channels">{{ channel.name }}</li>
+  </ul>
+  <form ng-submit="createChannel()">
+    <div class="form-group">
+      <label for="name">Channel Name</label>
+      <input type="text" name="name" ng-model="channel.name" class="form-control">
+    </div>
+
+    <div class="form-group">
+      <label for="isPrivate">Make Channel Private</label>
+      <input type="checkbox" name="isPrivate" ng-model="channel.isPrivate">
+    </div>
+
+    <button type="submit" class="btn btn-primary">Create Channel</button>
+
+  </form>
+</div>

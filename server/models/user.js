@@ -21,10 +21,11 @@ const userSchema = new mongoose.Schema({
     type: ObjectId,
     ref: 'Channel'
   }],
-  confirmed: {
-    type: Boolean,
-    default: false
-  }
+  /* NO LONGER REQUIRE CONFIRMATION EMAIL */
+  // confirmed: {
+  //   type: Boolean,
+  //   default: false
+  // }
 }, {
   timestamps: true
 });

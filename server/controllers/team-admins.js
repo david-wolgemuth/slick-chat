@@ -4,12 +4,13 @@ const jwt = require('jsonwebtoken');
 
 const User = mongoose.model('User');
 const Team = mongoose.model('Team');
+const Channel = mongoose.model('Channel');
 const teamAdmins = {};
 module.exports = teamAdmins;
 
 /**
  * Create a TeamAdmin
- *  (Also creates a team)
+ *  (Also creates a team with 'general' channel)
  * Sends email with default password
  *  
  * body: {
@@ -17,30 +18,24 @@ module.exports = teamAdmins;
  * }
  * response: {
  *   message: String,
- *   data: { userId, teamId }
+ *   data: { adminId, teamId }
  * }
  */
 teamAdmins.create = (request, response, next) => {
   const { email } = request.body;
+  const password = User.generateRandomPassword();
   User.create({
-    email
+    email, password
   })
-  .then((user) => {
-    Team.create({
-      admins: [user]
-    })
-    .then((team) => {
-      user.team = team;
-      const password = User.generateRandomPassword();
-      user.password = password;
-      user.save()
-      .then(() => {
-        return mailer.sendTeamAdminConfirmation(user, team, password);
-      })
+  .then((admin) => {
+    Team.createWithDefaults(admin)
+    .then(team => {
+      console.log("ADMIN:", Boolean(admin), "TEAM:", Boolean(team));
+      return mailer.sendTeamAdminConfirmation(admin, team, password)
       .then(() => {
         response.json({
           message: 'Successfully Created Team Admin And Sent Email',
-          data: { userId: user._id, teamId: team._id }
+          data: { adminId: admin._id, teamId: team._id }
         });
       });
     });
