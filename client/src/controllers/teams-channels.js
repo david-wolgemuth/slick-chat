@@ -1,4 +1,4 @@
-export const teamsChannels = ($scope, teamFactory, $routeParams, channelFactory) => {
+export const teamsChannels = ($rootScope, $scope, teamFactory, $routeParams, channelFactory) => {
   $scope.team = null;
   $scope.channel = null;
   $scope.channels = null;
@@ -10,7 +10,6 @@ export const teamsChannels = ($scope, teamFactory, $routeParams, channelFactory)
       $scope.team = team;
       channelFactory.index({ team })
       .then(({ data: { channels }}) => {
-        console.log("CHANNELS:", channels);
         $scope.channels = channels;
       });
     });
@@ -21,6 +20,13 @@ export const teamsChannels = ($scope, teamFactory, $routeParams, channelFactory)
   $scope.createChannel = () => {
     const { team, channel: { name, isPrivate } } = $scope;
     channelFactory.create({ team, name, isPrivate })
-    .then(console.log).catch(console.error);
+    .then(({ data: { channel } }) => {
+      $scope.channels.push(channel);
+      $rootScope.$emit('alert', {
+        heading: 'Success',
+        message: `Created channel "${channel.name}"`
+      });
+      $scope.channel = {};
+    }).catch(console.error);
   };
 };

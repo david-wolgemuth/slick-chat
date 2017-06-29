@@ -14,6 +14,7 @@ export class ChannelFactory
   create ({ team, name, isPrivate })
   {
     const type = (isPrivate) ? 'PRIVATE' : 'PUBLIC';
-    return this.$http.post(`/api/teams/${team._id}/channels`, { name, type });
+    return this.$http.post(`/api/teams/${team._id}/channels`, { name, type })
+    .then(response => response.data);
   }
 }
