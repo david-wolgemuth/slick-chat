@@ -49,7 +49,7 @@ teamSchema.methods.hasAdmin = function (userId)
 teamSchema.methods.withLoggedInKey = function (user)
 {
   const team = this.toObject();
-  team.loggedIn = Boolean(user);
+  team.loggedInUserId = (user) ? user._id : null;
   return team;
 };
 

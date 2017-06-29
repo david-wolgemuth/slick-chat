@@ -10,7 +10,7 @@ module.exports = teamAdmins;
 /**
  * Create a TeamAdmin
  *  (Also creates a team)
- *  Should requestConfirmation if user successfully created
+ * Sends email with default password
  *  
  * body: {
  *  email: String
@@ -25,22 +25,21 @@ teamAdmins.create = (request, response, next) => {
   User.create({
     email
   })
-
   .then((user) => {
-
-    // DW Change
-    request.session.users.push(user._id);
     Team.create({
       admins: [user]
     })
-
     .then((team) => {
       user.team = team;
+      const password = User.generateRandomPassword();
+      user.password = password;
       user.save()
-      
+      .then(() => {
+        return mailer.sendTeamAdminConfirmation(user, team, password);
+      })
       .then(() => {
         response.json({
-          message: 'Successfully Created Team Admin',
+          message: 'Successfully Created Team Admin And Sent Email',
           data: { userId: user._id, teamId: team._id }
         });
       });

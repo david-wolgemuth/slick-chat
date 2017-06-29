@@ -1,4 +1,4 @@
-<div ng-controller="teamController">
+<div>
   <p>{{team.id}}</p>
   <form ng-submit="editTeam()">
     <input type="text" name="name" ng-model="team.name" placeholder="Name">
@@ -14,4 +14,14 @@
     <input type="email" name="email" ng-model="invite.email" placeholder="Email">
     <input type="submit" value="Invite User">
   </form>
+
+  <h2>Users</h2>
+  <ul class="list-group">
+    <li ng-repeat="user in users" class="list-group-item">
+      <h3 ng-bind="user.email"></h3>
+      <p>{{ user.firstName }} {{ user.lastName }}</p>
+      <p ng-if="team.admins.indexOf(user._id) !== -1">(ADMIN)</p>
+    </li>
+  </ul>
+
 </div>

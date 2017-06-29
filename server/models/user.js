@@ -66,12 +66,12 @@ userSchema.statics.authenticateLogin = function ({ email, password})
 
 userSchema.statics.generateRandomPassword = function ()
 {
-  let text = "";
-  const possible = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
-
+  let text = '';
+  const possible = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
   for(let i = 0; i < 16; i++ ) {
       text += possible.charAt(Math.floor(Math.random() * possible.length));
   }
+  text = 'asdf';  /* FOR DEVELOPMENT */
   return text;
 };
 

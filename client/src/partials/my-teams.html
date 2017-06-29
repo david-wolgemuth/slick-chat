@@ -1,0 +1,21 @@
+<div>
+
+  <h3>Teams Belonging To "{{ email }}"</h3>
+  <ul class="list-group">
+    <li ng-repeat="team in teams" class="list-group-item">
+      <h3 ng-bind="team._id"></h3>
+      <form ng-if="!team.loggedInUserId" ng-submit="login(user, team)"> 
+        <input type="password" ng-model="user.password" placeholder="Password">
+        <button type="submit">Login</button>
+      </form>
+      <div ng-if="team.loggedInUserId">
+        <form  ng-submit="logout(team)">
+          <button type="submit">Logout</button>
+        </form>
+        <a href="/#!/edit-user/{{ team.loggedInUserId }}">Edit User</a>
+        <a href="/#!/edit-team/{{ team._id }}" ng-if="team.admins.indexOf(team.loggedInUserId) !== -1">Edit Team</a>
+      </div>
+    </li>
+  </ul>
+  
+</div>

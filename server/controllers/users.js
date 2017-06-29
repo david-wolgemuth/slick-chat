@@ -25,12 +25,32 @@ users.me = (request, response, next) => {
 };
 
 /**
+ * Get all users on team (must be on team)
+ * params: { teamId }
+ * response: { message, data: { user } }
+ */
+users.index = (request, response) => {
+  const { teamId } = request.params;
+  const user = request.user({ teamId });
+  if (!user) {
+    return response.status(403).json({ message: 'User Not On Team' });
+  }
+  User.find({ team: teamId })
+  .then(users => {
+    response.json({
+      message: `Users on team "${teamId}`,
+      data: { users }
+    });
+  });
+};
+
+/**
  * When passed a userId or teamId in query will logout only that user,
  * Otherwise logs out all users in session
  * response: { message }
  */
 users.logout = (request, response) => {
-  let { userId, teamId } = request.query;
+  const { userId, teamId } = request.query;
   if (userId) {
     request.removeUserFromSession({ userId });
     response.json({ message: `Logged Out User "${userId}"` });
@@ -62,6 +82,7 @@ users.logout = (request, response) => {
 users.create = (request, response, next) => {
   const { firstName, lastName, email } = request.body;
   const { teamId } = request.params;
+  console.log('TEAM ID:', teamId);
   Team.findById(teamId)
   .then(team => {
     if (!team) {
@@ -79,7 +100,7 @@ users.create = (request, response, next) => {
       .then(() => {
         response.json({
           message: 'Successfully Created User And Sent Invitation Email',
-          data: { userId: user._id }
+          data: { user }
         });
       });
     });
