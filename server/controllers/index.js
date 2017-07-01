@@ -4,6 +4,7 @@ const router = express.Router();
 const teams = require('./teams');
 const teamAdmins = require('./team-admins');
 const users = require('./users');
+const channels = require('./channels');
 
 const middleware = require('./middleware');
 
@@ -30,6 +31,10 @@ router.post('/teams/:teamId/users/login', users.login);
 // router.get('/teams/:teamId/users/:userId/request-confirmation', users.requestConfirmation);
 router.get('/teams/:teamId/users/:userId/confirmation', users.confirmation);
 router.put('/teams/:teamId/users/:userId', users.update);
+
+/* TEAM CHANNELS */
+router.post('/teams/:teamId/channels', channels.create);
+router.get('/teams/:teamId/channels', channels.index);
 
 router.use(middleware.handleServerError);
 

@@ -11,6 +11,11 @@ const channelSchema = new mongoose.Schema({
     // ],
     // /*Unique within team Check*/
   },
+  type: {
+    type: String,
+    enum: [ 'PRIVATE', 'PUBLIC', 'DIRECT' ],
+    default: 'PUBLIC'
+  },
   team: {
     type: ObjectId,
     ref: 'Team'

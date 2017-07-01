@@ -17,6 +17,10 @@ export const routes = (app) => {
         templateUrl: 'edit-user.html',
         controller:  'editUserController'
       })
+      .when('/teams/:teamId/channels', {
+        templateUrl: 'teams-channels.html',
+        controller:  'teamsChannelsController'
+      })
       .otherwise({
         redirectTo: '/'
       });
