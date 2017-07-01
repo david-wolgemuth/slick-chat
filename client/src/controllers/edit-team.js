@@ -6,7 +6,6 @@ export const editTeam = ($rootScope, $scope, $location, $routeParams, userFactor
   const retrieveTeam = () => {
     teamFactory.find($routeParams.teamId)
     .then(({ data: { team }}) => {
-      console.log(team);
       $scope.team = team;
     });
   };
@@ -20,7 +19,7 @@ export const editTeam = ($rootScope, $scope, $location, $routeParams, userFactor
   retrieveTeamUsers();
 
   $scope.editTeam = function() {
-    console.log($scope.team);
+    // STUB
   };
 
   $scope.inviteUser = function() {

@@ -43,6 +43,9 @@ channels.create = (request, response, next) => {
  * Search For Channels
  * params: { teamId }
  * query:   { query: 'public|joined|unjoined|private|direct' }  (default: public)
+ * response: {
+ *   message, data: { channels }
+ * }
  */
 channels.index = (request, response, next) => {
   const { teamId } = request.params;
@@ -54,6 +57,27 @@ channels.index = (request, response, next) => {
   default:
     return getPublicChannels(teamId, response).catch(next);
   }
+};
+
+/**
+ * Get Channel By Id
+ * params: { teamId, channelId }
+ * response: {
+ *   message, data: { channel }
+ * }
+ */
+channels.show = (request, response, next) => {
+  const { teamId, channelId } = request.params;
+  const { userId } = request.user({ teamId });
+  Channel.findById(channelId)
+  .populate('users', 'email').populate('team').exec()
+  .then(channel => {
+    // TODO: check that user is on channel's team ...
+    response.json({
+      message: `Channel With Id "${channelId}"`,
+      data: { channel }
+    });
+  });
 };
 
 const getJoinedChannels = (userId, response) => {

@@ -2,7 +2,9 @@ TEAM CHANNELS
 <div>
   <h1>Team "{{ team.name }}" Channels:</h1>
   <ul>
-    <li ng-repeat="channel in channels">{{ channel.name }}</li>
+    <li ng-repeat="channel in channels">
+      <a href="/#!/teams/{{ team._id }}/{{ channel._id}}">{{ channel.name }}</a>
+    </li>
   </ul>
   <form ng-submit="createChannel()">
     <div class="form-group">

@@ -30,8 +30,9 @@ teamAdmins.create = (request, response, next) => {
   .then((admin) => {
     Team.createWithDefaults(admin)
     .then(team => {
-      console.log("ADMIN:", Boolean(admin), "TEAM:", Boolean(team));
-      return mailer.sendTeamAdminConfirmation(admin, team, password)
+      /* TURNED OFF FOR DEVELOPMENT */
+      // return mailer.sendTeamAdminConfirmation(admin, team, password)
+      return Promise.resolve()
       .then(() => {
         response.json({
           message: 'Successfully Created Team Admin And Sent Email',

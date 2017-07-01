@@ -5,6 +5,7 @@ const teams = require('./teams');
 const teamAdmins = require('./team-admins');
 const users = require('./users');
 const channels = require('./channels');
+const messages = require('./messages');
 
 const middleware = require('./middleware');
 
@@ -35,6 +36,11 @@ router.put('/teams/:teamId/users/:userId', users.update);
 /* TEAM CHANNELS */
 router.post('/teams/:teamId/channels', channels.create);
 router.get('/teams/:teamId/channels', channels.index);
+router.get('/teams/:teamId/channels/:channelId', channels.show);
+
+/* MESSAGES */
+router.post('/teams/:teamId/channels/:channelId/messages', messages.create);
+router.get('/teams/:teamId/channels/:channelId/messages', messages.index);
 
 router.use(middleware.handleServerError);
 

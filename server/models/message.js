@@ -6,10 +6,10 @@ const messageSchema = new mongoose.Schema({
     type: String,
     // required: true,
   },
-  upload: {
-    type: ObjectId,
-    ref: 'Upload'
-  },
+  // upload: {
+  //   type: ObjectId,
+  //   ref: 'Upload'
+  // },
   user: {
     type: ObjectId,
     ref: 'User'

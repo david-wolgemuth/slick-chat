@@ -6,9 +6,8 @@ export const myTeams = ($scope, $location, teamFactory, userFactory) => {
   const loadTeamsFromEmail = () => {
     teamFactory.index({ email })
     .then(({ data: { teams } }) => {
-      console.log(teams);
       $scope.teams = teams;
-    }).catch(console.error);
+    });
   };
 
   loadTeamsFromEmail();
@@ -17,7 +16,6 @@ export const myTeams = ($scope, $location, teamFactory, userFactory) => {
     user.email = email;
     userFactory.login(user, team)
     .then(({ message, data: { user } }) => {
-      console.log(message, user);
       team.loggedInUserId = user._id;
     });
   };
