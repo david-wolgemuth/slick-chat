@@ -1,0 +1,9 @@
+<h1>#{{ channel.name }}</h1>
+<chat-message ng-repeat="message in messages"></chat-message>
+<form>
+  <label for="content">Write Message:</label>
+  <div class="input-group">
+    <textarea id="content" name="content" ng-model="message.content" class="form-control custom-control" rows="1" style="resize:none" ng-keypress="keypressOnTextArea($event, message)"></textarea>
+    <span class="input-group-addon btn btn-primary" ng-click="sendMessage(message)">Send</span>
+  </div>
+</form>

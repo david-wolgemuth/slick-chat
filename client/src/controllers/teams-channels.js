@@ -27,6 +27,6 @@ export const teamsChannels = ($rootScope, $scope, teamFactory, $routeParams, cha
         message: `Created channel "${channel.name}"`
       });
       $scope.channel = {};
-    }).catch(console.error);
+    });
   };
 };

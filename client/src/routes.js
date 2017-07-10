@@ -21,8 +21,12 @@ export const routes = (app) => {
         templateUrl: 'teams-channels.html',
         controller:  'teamsChannelsController'
       })
+      .when('/teams/:teamId/:channelId', {
+        templateUrl: 'channel.html',
+        controller:  'channelController'
+      })
       .otherwise({
-        redirectTo: '/'
+        template: '<h1 style="color:red;">ROUTE IS NOT REGISTERED</h1>'
       });
   });
 };

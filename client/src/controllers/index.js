@@ -5,6 +5,7 @@ import { editUser } from './edit-user';
 import { myTeams } from './my-teams';
 import { teamsChannels } from './teams-channels';
 import { alerts } from './alerts';
+import { channel } from './channel';
 
 export const registerControllers = (app) => {
   app.controller('homePageController', homePage);
@@ -14,4 +15,5 @@ export const registerControllers = (app) => {
   app.controller('myTeamsController', myTeams);
   app.controller('teamsChannelsController', teamsChannels);
   app.controller('alertsController', alerts);
+  app.controller('channelController', channel);
 };

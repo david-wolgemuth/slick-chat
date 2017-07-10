@@ -82,7 +82,6 @@ users.logout = (request, response) => {
 users.create = (request, response, next) => {
   const { firstName, lastName, email } = request.body;
   const { teamId } = request.params;
-  console.log('TEAM ID:', teamId);
   Team.findById(teamId)
   .then(team => {
     if (!team) {
@@ -96,7 +95,9 @@ users.create = (request, response, next) => {
       firstName, lastName, email, team, password: tempPassword
     })
     .then(user => {
-      mailer.sendUserInvitation(user, team, tempPassword)
+      return Promise.resolve()
+      /* TURNED OFF FOR DEVELOPMENT */
+      // mailer.sendUserInvitation(user, team, tempPassword)
       .then(() => {
         response.json({
           message: 'Successfully Created User And Sent Invitation Email',

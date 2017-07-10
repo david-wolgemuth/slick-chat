@@ -1,7 +1,6 @@
 const mongoose = require('mongoose');
 
 module.exports.handleServerError = (error, request, response, next) => {
-  console.log('HANDLING ERROR', error);
   if (response.headersSent) {
     return next(error);
   }

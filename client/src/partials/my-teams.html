@@ -14,6 +14,7 @@
         </form>
         <a href="/#!/edit-user/{{ team.loggedInUserId }}">Edit User</a>
         <a href="/#!/edit-team/{{ team._id }}" ng-if="team.admins.indexOf(team.loggedInUserId) !== -1">Edit Team</a>
+        <a href="/#!/teams/{{ team._id }}/channels">View Teams Channels</a>
       </div>
     </li>
   </ul>

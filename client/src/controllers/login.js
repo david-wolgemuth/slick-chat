@@ -1,5 +1,6 @@
 export const login = ($rootScope, $scope, $location, userFactory) => {
-  $scope.user = {};
+  $scope.user = { email: '' };
+
   $scope.findTeam = function() {
     $location.url('my-teams');
     $location.search('email', $scope.user.email);

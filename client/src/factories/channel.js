@@ -17,4 +17,9 @@ export class ChannelFactory
     return this.$http.post(`/api/teams/${team._id}/channels`, { name, type })
     .then(response => response.data);
   }
+  find ({ teamId, channelId })
+  {
+    return this.$http.get(`/api/teams/${teamId}/channels/${channelId}`)
+    .then(response => response.data);
+  }
 }
